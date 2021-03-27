@@ -15,6 +15,7 @@ func Start(c chan bool, port, level string) {
 	r.POST("/timelines", CreateTimeline)
 	if level == "main" {
 		r.GET("/servers", ShowServers)
+		r.POST("/servers", AddServer)
 	}
 	r.Run(":" + port)
 }
