@@ -10,8 +10,7 @@ import (
 
 var ServerLock sync.Mutex
 
-var ServerMap map[string]string = map[string]string{"localhost:8080": "1", "localhost:8081": "1"}
-var ServerList []string = []string{"localhost:8080", "localhost:8081"}
+var ServerList []string = []string{"localhost:8080"}
 
 func ShowServers(c *gin.Context) {
 	ServerLock.Lock()
@@ -24,17 +23,20 @@ func AddServer(c *gin.Context) {
 	in := ""
 	out := ""
 	ServerLock.Lock()
-	ServerMap[name] = "1"
-	ServerList = []string{}
-	for k, _ := range ServerMap {
-		ServerList = append(ServerList, fmt.Sprintf("%s", k))
+	for _, s := range ServerList {
+		if s == name {
+			break
+		}
 	}
-	index := 0
+	index := -1
 	for i, s := range ServerList {
 		if s == name {
 			index = i
 			break
 		}
+	}
+	if index == -1 {
+		ServerList = append(ServerList, name)
 	}
 	if index > 0 {
 		in = ServerList[index-1]
@@ -44,14 +46,29 @@ func AddServer(c *gin.Context) {
 	} else if ServerList[0] != name {
 		out = ServerList[0]
 	}
+
+	if globalInOut.Flavor == "main" && len(ServerList) > 1 {
+		globalInOut.Out = ServerList[1]
+		globalInOut.In = ServerList[len(ServerList)-1]
+		if globalInOut.In == globalInOut.Out {
+		}
+		fmt.Println(globalInOut.Debug())
+	}
 	ServerLock.Unlock()
+	//	TellOutAboutNewServer(&t, globalInOut.Out)
+
 	c.JSON(200, gin.H{"in": in, "out": out, "name": name})
 }
 
 type InOut struct {
-	In   string `json:"in"`
-	Out  string `json:"out"`
-	Name string `name:"out"`
+	In     string `json:"in"`
+	Out    string `json:"out"`
+	Name   string `name:"name"`
+	Flavor string `name:"flavor"`
+}
+
+func (io *InOut) Debug() string {
+	return fmt.Sprintf("In: %s, Out: %s, Name: %s |%s|", io.In, io.Out, io.Name, io.Flavor)
 }
 
 func ParseInOut(s string) *InOut {

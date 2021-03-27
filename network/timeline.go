@@ -123,6 +123,7 @@ func TellOutAboutNewTimeline(t *Timeline, out string) {
 	os.Setenv("CLT_HOST", fmt.Sprintf("http://%s/", out))
 	asBytes, _ := json.Marshal(t)
 	DoPost("timelines/notify", asBytes)
+	os.Setenv("CLT_HOST", "")
 }
 
 func DisplayTimelines(s string) {

@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,14 +20,18 @@ func Start(c chan bool, port, host string) {
 	if host == "main" {
 		r.GET("/servers", ShowServers)
 		r.POST("/servers", AddServer)
+		globalInOut = &InOut{}
+		globalInOut.Flavor = "main"
 	} else {
 		s := `host=%s
 port=%s
 `
 		payload := fmt.Sprintf(s, host, port)
+		os.Setenv("CLT_HOST", "")
 		jsonString := DoPost("servers", []byte(payload))
 		globalInOut = ParseInOut(jsonString)
-		fmt.Println(globalInOut)
+		globalInOut.Flavor = "other"
 	}
+	fmt.Println(globalInOut.Debug())
 	r.Run(":" + port)
 }
