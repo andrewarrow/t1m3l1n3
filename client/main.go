@@ -24,6 +24,7 @@ func main() {
 	command := os.Args[1]
 
 	if command == "ls" {
+		DoGet("timelines")
 	} else if command == "post" {
 	}
 }

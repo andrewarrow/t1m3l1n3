@@ -2,15 +2,15 @@ package network
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Start(c chan bool) {
 
 	fmt.Println("starting...")
 
-	for {
-		time.Sleep(time.Second * 1)
-	}
-
+	r := gin.Default()
+	r.GET("/timelines", ShowTimelines)
+	r.Run()
 }
