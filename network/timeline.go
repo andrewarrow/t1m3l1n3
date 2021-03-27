@@ -59,8 +59,13 @@ type Timeline struct {
 	PostedAt int64  `json:"posted_at"`
 }
 
+func (t *Timeline) ToKey() string {
+	return fmt.Sprintf("%s_%d", t.From, t.PostedAt)
+}
+
 var ByFromLock sync.Mutex
-var ByFrom map[string][]Timeline = map[string][]Timeline{}
+var ByFrom map[string][]*Timeline = map[string][]*Timeline{}
+var ByKey map[string]*Timeline = map[string]*Timeline{}
 
 func NotifyTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
@@ -74,8 +79,17 @@ func CreateTimeline(c *gin.Context) {
 	t.From = m["username"]
 	t.PostedAt = time.Now().Unix()
 
+	key := t.ToKey()
+
 	ByFromLock.Lock()
-	ByFrom[t.From] = append([]Timeline{t}, ByFrom[t.From]...)
+	ByKey[key] = &t
+	ByFrom = map[string][]*Timeline{}
+	for k, v := range ByKey {
+		tokens := strings.Split(k, "_")
+		from := tokens[0]
+		//ts := tokens[1]
+		ByFrom[from] = append([]*Timeline{v}, ByFrom[from]...)
+	}
 	ByFromLock.Unlock()
 
 	TellOutAboutNewTimeline(&t, globalInOut.Out)
