@@ -1,6 +1,8 @@
 package network
 
 import (
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"strings"
 	"sync"
@@ -12,9 +14,7 @@ import (
 func ShowTimelines(c *gin.Context) {
 
 	ByFromLock.Lock()
-	for k, v := range ByFrom {
-		c.JSON(200, gin.H{"from": k, "timelines": v})
-	}
+	c.JSON(200, gin.H{"from": ByFrom})
 	ByFromLock.Unlock()
 }
 
@@ -37,6 +37,10 @@ func mapBody(c *gin.Context) map[string]string {
 	return m
 }
 
+type TimelineWrapper struct {
+	From map[string][]Timeline `json:"from"`
+}
+
 type Timeline struct {
 	Text     string `json:"text"`
 	From     string `json:"from"`
@@ -56,5 +60,12 @@ func CreateTimeline(c *gin.Context) {
 	ByFromLock.Lock()
 	ByFrom[t.From] = append(ByFrom[t.From], t)
 	ByFromLock.Unlock()
+}
 
+func DisplayTimelines(s string) {
+	var tw TimelineWrapper
+	json.Unmarshal([]byte(s), &tw)
+	for k, v := range tw.From {
+		fmt.Println(v, k)
+	}
 }

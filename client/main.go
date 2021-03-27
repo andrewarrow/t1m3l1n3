@@ -2,6 +2,7 @@ package main
 
 import (
 	"clt/cli"
+	"clt/network"
 	"clt/persist"
 	"fmt"
 	"math/rand"
@@ -30,7 +31,7 @@ func main() {
 
 	if command == "ls" {
 		s := DoGet("timelines")
-		fmt.Println(s)
+		network.DisplayTimelines(s)
 	} else if command == "auth" {
 		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 	} else if command == "post" {
