@@ -12,5 +12,6 @@ func Start(c chan bool) {
 
 	r := gin.Default()
 	r.GET("/timelines", ShowTimelines)
+	r.POST("/timelines", CreateTimeline)
 	r.Run()
 }
