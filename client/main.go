@@ -12,9 +12,10 @@ import (
 
 func PrintHelp() {
 	fmt.Println("")
-	fmt.Println("  clt ls      # List recent timelines")
-	fmt.Println("  clt post    # Post new timeline with --text=hi")
-	fmt.Println("  clt auth    # Set your username --name=")
+	fmt.Println("  clt ls       # List recent timelines")
+	fmt.Println("  clt post     # Post new timeline with --text=hi")
+	fmt.Println("  clt auth     # Set your username --name=")
+	fmt.Println("  clt servers  # List the main list")
 	fmt.Println("")
 }
 
@@ -30,10 +31,10 @@ func main() {
 	command := os.Args[1]
 
 	if command == "ls" {
-		s := DoGet("timelines")
+		s := network.DoGet("timelines")
 		network.DisplayTimelines(s)
 	} else if command == "servers" {
-		s := DoGet("servers")
+		s := network.DoGet("servers")
 		fmt.Println(s)
 	} else if command == "auth" {
 		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
@@ -42,6 +43,6 @@ func main() {
 username=%s
 `
 		payload := fmt.Sprintf(s, cli.ArgMap["text"], cli.Username)
-		DoPost("timelines", []byte(payload))
+		network.DoPost("timelines", []byte(payload))
 	}
 }
