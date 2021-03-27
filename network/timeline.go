@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func mapIt(tokens []string) (key, val string) {
 	}
 	return tokens[0], tokens[1]
 }
-func CreateTimeline(c *gin.Context) {
+func mapBody(c *gin.Context) map[string]string {
 	defer c.Request.Body.Close()
 	body, _ := ioutil.ReadAll(c.Request.Body)
 	m := map[string]string{}
@@ -29,6 +30,21 @@ func CreateTimeline(c *gin.Context) {
 			m[k] = v
 		}
 	}
-	fmt.Println(m)
+	return m
+}
+
+type Timeline struct {
+	Text     string
+	From     string
+	PostedAt int64
+}
+
+func CreateTimeline(c *gin.Context) {
+	m := mapBody(c)
+	t := Timeline{}
+	t.Text = m["text"]
+	t.From = m["username"]
+	t.PostedAt = time.Now().Unix()
+	fmt.Println(t)
 
 }
