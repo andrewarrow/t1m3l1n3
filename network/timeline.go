@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -59,6 +60,15 @@ type Timeline struct {
 	PostedAt int64  `json:"posted_at"`
 }
 
+func TimelineFromMap(m map[string]string) *Timeline {
+	t := Timeline{}
+	t.Text = m["text"]
+	t.From = m["from"]
+	t.PostedAt, _ = strconv.ParseInt(m["posted_at"], 10, 64)
+
+	return &t
+}
+
 func (t *Timeline) ToKey() string {
 	return fmt.Sprintf("%s_%d", t.From, t.PostedAt)
 }
@@ -70,6 +80,8 @@ var ByKey map[string]*Timeline = map[string]*Timeline{}
 func NotifyTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
 	fmt.Println("mapJsonBody", m)
+	t := TimelineFromMap(m)
+	t.AddToByKey()
 }
 
 func CreateTimeline(c *gin.Context) {
@@ -79,10 +91,15 @@ func CreateTimeline(c *gin.Context) {
 	t.From = m["username"]
 	t.PostedAt = time.Now().Unix()
 
-	key := t.ToKey()
+	t.AddToByKey()
 
+	TellOutAboutNewTimeline(&t, globalInOut.Out)
+}
+
+func (t *Timeline) AddToByKey() {
+	key := t.ToKey()
 	ByFromLock.Lock()
-	ByKey[key] = &t
+	ByKey[key] = t
 	ByFrom = map[string][]*Timeline{}
 	for k, v := range ByKey {
 		tokens := strings.Split(k, "_")
@@ -91,8 +108,6 @@ func CreateTimeline(c *gin.Context) {
 		ByFrom[from] = append([]*Timeline{v}, ByFrom[from]...)
 	}
 	ByFromLock.Unlock()
-
-	TellOutAboutNewTimeline(&t, globalInOut.Out)
 }
 
 func TellOutAboutNewTimeline(t *Timeline, out string) {
