@@ -29,7 +29,8 @@ func main() {
 	command := os.Args[1]
 
 	if command == "ls" {
-		DoGet("timelines")
+		s := DoGet("timelines")
+		fmt.Println(s)
 	} else if command == "auth" {
 		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 	} else if command == "post" {

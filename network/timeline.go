@@ -1,9 +1,9 @@
 package network
 
 import (
-	"fmt"
 	"io/ioutil"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,11 @@ import (
 
 func ShowTimelines(c *gin.Context) {
 
-	c.JSON(200, gin.H{"message": "pong"})
+	ByFromLock.Lock()
+	for k, v := range ByFrom {
+		c.JSON(200, gin.H{"from": k, "timelines": v})
+	}
+	ByFromLock.Unlock()
 }
 
 func mapIt(tokens []string) (key, val string) {
@@ -34,10 +38,13 @@ func mapBody(c *gin.Context) map[string]string {
 }
 
 type Timeline struct {
-	Text     string
-	From     string
-	PostedAt int64
+	Text     string `json:"text"`
+	From     string `json:"from"`
+	PostedAt int64  `json:"posted_at"`
 }
+
+var ByFromLock sync.Mutex
+var ByFrom map[string][]Timeline = map[string][]Timeline{}
 
 func CreateTimeline(c *gin.Context) {
 	m := mapBody(c)
@@ -45,6 +52,9 @@ func CreateTimeline(c *gin.Context) {
 	t.Text = m["text"]
 	t.From = m["username"]
 	t.PostedAt = time.Now().Unix()
-	fmt.Println(t)
+
+	ByFromLock.Lock()
+	ByFrom[t.From] = append(ByFrom[t.From], t)
+	ByFromLock.Unlock()
 
 }
