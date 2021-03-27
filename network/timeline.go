@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -23,6 +24,17 @@ func mapIt(tokens []string) (key, val string) {
 		return "", ""
 	}
 	return tokens[0], tokens[1]
+}
+func mapJsonBody(c *gin.Context) map[string]string {
+	defer c.Request.Body.Close()
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	var j map[string]interface{}
+	json.Unmarshal(body, &j)
+	m := map[string]string{}
+	for k, v := range j {
+		m[k] = fmt.Sprintf("%v", v)
+	}
+	return m
 }
 func mapBody(c *gin.Context) map[string]string {
 	defer c.Request.Body.Close()
@@ -50,6 +62,11 @@ type Timeline struct {
 var ByFromLock sync.Mutex
 var ByFrom map[string][]Timeline = map[string][]Timeline{}
 
+func NotifyTimeline(c *gin.Context) {
+	m := mapJsonBody(c)
+	fmt.Println("mapJsonBody", m)
+}
+
 func CreateTimeline(c *gin.Context) {
 	m := mapBody(c)
 	t := Timeline{}
@@ -60,6 +77,14 @@ func CreateTimeline(c *gin.Context) {
 	ByFromLock.Lock()
 	ByFrom[t.From] = append([]Timeline{t}, ByFrom[t.From]...)
 	ByFromLock.Unlock()
+
+	TellOutAboutNewTimeline(&t, globalInOut.Out)
+}
+
+func TellOutAboutNewTimeline(t *Timeline, out string) {
+	os.Setenv("CLT_HOST", fmt.Sprintf("http://%s/", out))
+	asBytes, _ := json.Marshal(t)
+	DoPost("timelines/notify", asBytes)
 }
 
 func DisplayTimelines(s string) {

@@ -1,6 +1,7 @@
 package network
 
 import (
+	"encoding/json"
 	"fmt"
 	"sync"
 
@@ -9,8 +10,8 @@ import (
 
 var ServerLock sync.Mutex
 
-var ServerMap map[string]string = map[string]string{"neverssl.com": "80", "cyborg.st": "80"}
-var ServerList []string = []string{"neverssl.com:80", "cyborg.st:80"}
+var ServerMap map[string]string = map[string]string{"localhost:8080": "1", "localhost:8081": "1"}
+var ServerList []string = []string{"localhost:8080", "localhost:8081"}
 
 func ShowServers(c *gin.Context) {
 	ServerLock.Lock()
@@ -23,10 +24,10 @@ func AddServer(c *gin.Context) {
 	in := ""
 	out := ""
 	ServerLock.Lock()
-	ServerMap[m["host"]] = m["port"]
+	ServerMap[name] = "1"
 	ServerList = []string{}
-	for k, v := range ServerMap {
-		ServerList = append(ServerList, fmt.Sprintf("%s:%s", k, v))
+	for k, _ := range ServerMap {
+		ServerList = append(ServerList, fmt.Sprintf("%s", k))
 	}
 	index := 0
 	for i, s := range ServerList {
@@ -45,4 +46,16 @@ func AddServer(c *gin.Context) {
 	}
 	ServerLock.Unlock()
 	c.JSON(200, gin.H{"in": in, "out": out})
+}
+
+type InOut struct {
+	In  string `json:"in"`
+	Out string `json:"out"`
+}
+
+func ParseInOut(s string) *InOut {
+	var inOut InOut
+	json.Unmarshal([]byte(s), &inOut)
+
+	return &inOut
 }

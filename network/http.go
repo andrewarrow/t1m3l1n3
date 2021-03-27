@@ -10,7 +10,7 @@ import (
 )
 
 func BaseUrl() string {
-	url := os.Getenv("CLT_MAIN_HOST")
+	url := os.Getenv("CLT_HOST")
 	if url == "" {
 		return "http://127.0.0.1:8080/"
 	}
