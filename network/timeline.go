@@ -58,6 +58,7 @@ type Timeline struct {
 	Text     string `json:"text"`
 	From     string `json:"from"`
 	PostedAt int64  `json:"posted_at"`
+	Origin   string `json:"origin"`
 }
 
 func TimelineFromMap(m map[string]string) *Timeline {
@@ -65,6 +66,7 @@ func TimelineFromMap(m map[string]string) *Timeline {
 	t.Text = m["text"]
 	t.From = m["from"]
 	t.PostedAt, _ = strconv.ParseInt(m["posted_at"], 10, 64)
+	t.Origin = m["origin"]
 
 	return &t
 }
@@ -90,15 +92,22 @@ func CreateTimeline(c *gin.Context) {
 	t.Text = m["text"]
 	t.From = m["username"]
 	t.PostedAt = time.Now().Unix()
+	t.Origin = globalInOut.Name
 
-	t.AddToByKey()
-
-	TellOutAboutNewTimeline(&t, globalInOut.Out)
+	if t.AddToByKey() == true {
+		TellOutAboutNewTimeline(&t, globalInOut.Out)
+	}
 }
 
-func (t *Timeline) AddToByKey() {
+func (t *Timeline) AddToByKey() bool {
 	key := t.ToKey()
 	ByFromLock.Lock()
+	defer ByFromLock.Unlock()
+
+	if ByKey[key] != nil && ByKey[key].Origin == globalInOut.Name {
+		return false
+	}
+
 	ByKey[key] = t
 	ByFrom = map[string][]*Timeline{}
 	for k, v := range ByKey {
@@ -107,7 +116,7 @@ func (t *Timeline) AddToByKey() {
 		//ts := tokens[1]
 		ByFrom[from] = append([]*Timeline{v}, ByFrom[from]...)
 	}
-	ByFromLock.Unlock()
+	return true
 }
 
 func TellOutAboutNewTimeline(t *Timeline, out string) {

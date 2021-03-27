@@ -45,12 +45,13 @@ func AddServer(c *gin.Context) {
 		out = ServerList[0]
 	}
 	ServerLock.Unlock()
-	c.JSON(200, gin.H{"in": in, "out": out})
+	c.JSON(200, gin.H{"in": in, "out": out, "name": name})
 }
 
 type InOut struct {
-	In  string `json:"in"`
-	Out string `json:"out"`
+	In   string `json:"in"`
+	Out  string `json:"out"`
+	Name string `name:"out"`
 }
 
 func ParseInOut(s string) *InOut {
