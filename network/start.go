@@ -22,6 +22,7 @@ func Start(c chan bool, port, host string) {
 		r.POST("/servers", AddServer)
 		globalInOut = &InOut{}
 		globalInOut.Flavor = "main"
+		globalInOut.Name = "localhost:8080"
 	} else {
 		s := `host=%s
 port=%s

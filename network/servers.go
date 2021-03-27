@@ -10,6 +10,7 @@ import (
 
 var ServerLock sync.Mutex
 
+var ServerLink map[string]string = map[string]string{"localhost:8080": ""}
 var ServerList []string = []string{"localhost:8080"}
 
 func ShowServers(c *gin.Context) {
@@ -20,14 +21,9 @@ func ShowServers(c *gin.Context) {
 func AddServer(c *gin.Context) {
 	m := mapBody(c)
 	name := fmt.Sprintf("%s:%s", m["host"], m["port"])
-	in := ""
-	out := ""
+	//in := ""
+	//out := ""
 	ServerLock.Lock()
-	for _, s := range ServerList {
-		if s == name {
-			break
-		}
-	}
 	index := -1
 	for i, s := range ServerList {
 		if s == name {
@@ -35,29 +31,28 @@ func AddServer(c *gin.Context) {
 			break
 		}
 	}
+	/*
+	   s1: s2
+	   s2: s1
+
+	   s1: s2
+	   s2: s3
+	   s3: s1
+	*/
 	if index == -1 {
+		previous := ServerList[len(ServerList)-1]
 		ServerList = append(ServerList, name)
-	}
-	if index > 0 {
-		in = ServerList[index-1]
-	}
-	if index != len(ServerList)-1 {
-		out = ServerList[index+1]
-	} else if ServerList[0] != name {
-		out = ServerList[0]
+		latest := ServerList[len(ServerList)-1]
+		ServerLink[latest] = globalInOut.Name
+		ServerLink[previous] = name
 	}
 
-	if globalInOut.Flavor == "main" && len(ServerList) > 1 {
-		globalInOut.Out = ServerList[1]
-		globalInOut.In = ServerList[len(ServerList)-1]
-		if globalInOut.In == globalInOut.Out {
-		}
-		fmt.Println(globalInOut.Debug())
-	}
+	fmt.Println(ServerLink)
 	ServerLock.Unlock()
 	//	TellOutAboutNewServer(&t, globalInOut.Out)
+	// s3 -> s1       // s1 tells s2 your new out is s3
 
-	c.JSON(200, gin.H{"in": in, "out": out, "name": name})
+	c.JSON(200, gin.H{"out": globalInOut.Name})
 }
 
 type InOut struct {
