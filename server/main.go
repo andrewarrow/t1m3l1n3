@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clt/network"
 	"fmt"
 	"math/rand"
 	"os"
@@ -24,6 +25,9 @@ func main() {
 	command := os.Args[1]
 
 	if command == "start" {
+		c := make(chan bool, 1)
+		go network.Start(c)
+		<-c
 	} else if command == "config" {
 	}
 }
