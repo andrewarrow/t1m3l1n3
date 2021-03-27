@@ -2,6 +2,7 @@ package cli
 
 import (
 	"clt/persist"
+	"crypto/rand"
 	"fmt"
 	"os"
 	"strings"
@@ -9,11 +10,17 @@ import (
 
 var ArgMap = map[string]string{}
 var Username string
+var ServerId string
 
+func MakeUuid() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	return strings.ToLower(fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:]))
+}
 func EnsureParamPass(vars ...string) {
 	for _, v := range vars {
 		if ArgMap[v] == "" {
-			fmt.Printf("error: Missing argument. Pass --%s=%s_ID\n", v, strings.ToUpper(v))
+			fmt.Printf("error: Missing argument. Pass --%s=%s\n", v, strings.ToUpper(v))
 			os.Exit(1)
 		}
 	}
@@ -22,6 +29,7 @@ func EnsureParamPass(vars ...string) {
 func ReadInGlobalVars() {
 	ArgMap = argsToMap()
 	Username = persist.ReadFromFile("USERNAME")
+	ServerId = persist.ReadFromFile("SERVER_ID")
 }
 
 func DisplayString(s string, size int) string {

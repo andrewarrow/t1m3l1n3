@@ -1,7 +1,9 @@
 package main
 
 import (
+	"clt/cli"
 	"clt/network"
+	"clt/persist"
 	"fmt"
 	"math/rand"
 	"os"
@@ -17,6 +19,13 @@ func PrintHelp() {
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	persist.Init()
+	cli.ReadInGlobalVars()
+
+	if cli.ServerId == "" {
+		cli.ServerId = cli.MakeUuid()
+		persist.SaveToFile("SERVER_ID", cli.ServerId)
+	}
 
 	if len(os.Args) == 1 {
 		PrintHelp()
@@ -25,8 +34,9 @@ func main() {
 	command := os.Args[1]
 
 	if command == "start" {
+		cli.EnsureParamPass("port")
 		c := make(chan bool, 1)
-		go network.Start(c)
+		go network.Start(c, cli.ArgMap["port"], cli.ArgMap["level"])
 		<-c
 	} else if command == "config" {
 	}

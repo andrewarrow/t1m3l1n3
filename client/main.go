@@ -32,6 +32,9 @@ func main() {
 	if command == "ls" {
 		s := DoGet("timelines")
 		network.DisplayTimelines(s)
+	} else if command == "servers" {
+		s := DoGet("servers")
+		fmt.Println(s)
 	} else if command == "auth" {
 		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 	} else if command == "post" {
