@@ -58,7 +58,7 @@ func CreateTimeline(c *gin.Context) {
 	t.PostedAt = time.Now().Unix()
 
 	ByFromLock.Lock()
-	ByFrom[t.From] = append(ByFrom[t.From], t)
+	ByFrom[t.From] = append([]Timeline{t}, ByFrom[t.From]...)
 	ByFromLock.Unlock()
 }
 
@@ -66,6 +66,9 @@ func DisplayTimelines(s string) {
 	var tw TimelineWrapper
 	json.Unmarshal([]byte(s), &tw)
 	for k, v := range tw.From {
-		fmt.Println(v, k)
+		fmt.Println(k)
+		for i, t := range v {
+			fmt.Printf("%02d. %s\n", i+1, t.Text)
+		}
 	}
 }
