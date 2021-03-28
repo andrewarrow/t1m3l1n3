@@ -7,10 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var universe *Universe
 var globalInOut *InOut
 
 func Start(c chan bool, port, host string) {
 
+	universe = NewUniverse()
 	fmt.Println("starting...")
 
 	r := gin.Default()
@@ -33,6 +35,5 @@ port=%s
 		globalInOut = ParseInOut(jsonString)
 		globalInOut.Flavor = "other"
 	}
-	fmt.Println(globalInOut.Debug())
 	r.Run(":" + port)
 }

@@ -13,15 +13,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var one64 [][]byte = [][]byte{}
-var one384 [][]byte = [][]byte{}
-var one192 [][]byte = [][]byte{}
-
 func ShowTimelines(c *gin.Context) {
 
-	ByFromLock.Lock()
-	c.JSON(200, gin.H{"from": ByFrom})
-	ByFromLock.Unlock()
+	UniverseLock.Lock()
+	c.JSON(200, gin.H{"from": universe})
+	UniverseLock.Unlock()
 }
 
 func mapIt(tokens []string) (key, val string) {
@@ -75,19 +71,13 @@ func TimelineFromMap(m map[string]string) *Timeline {
 	return &t
 }
 
-func (t *Timeline) ToKey() string {
-	return fmt.Sprintf("%s_%d", t.From, t.PostedAt)
-}
-
-var ByFromLock sync.Mutex
-var ByFrom map[string][]*Timeline = map[string][]*Timeline{}
-var ByKey map[string]*Timeline = map[string]*Timeline{}
+var UniverseLock sync.Mutex
 
 func NotifyTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
 	fmt.Println("mapJsonBody", m)
-	t := TimelineFromMap(m)
-	t.AddToByKey()
+	//t := TimelineFromMap(m)
+	//t.AddToByKey()
 }
 
 func CreateTimeline(c *gin.Context) {
@@ -98,28 +88,15 @@ func CreateTimeline(c *gin.Context) {
 	t.PostedAt = time.Now().Unix()
 	t.Origin = globalInOut.Name
 
-	if t.AddToByKey() == true {
+	if t.AddToUniverse() == true {
 		//TellOutAboutNewTimeline(&t, globalInOut.Out)
 	}
 }
 
-func (t *Timeline) AddToByKey() bool {
-	key := t.ToKey()
-	ByFromLock.Lock()
-	defer ByFromLock.Unlock()
-
-	//if ByKey[key] != nil && ByKey[key].Origin == globalInOut.Name {
-	//	return false
-	//}
-
-	ByKey[key] = t
-	ByFrom = map[string][]*Timeline{}
-	for k, v := range ByKey {
-		tokens := strings.Split(k, "_")
-		from := tokens[0]
-		//ts := tokens[1]
-		ByFrom[from] = append([]*Timeline{v}, ByFrom[from]...)
-	}
+func (t *Timeline) AddToUniverse() bool {
+	UniverseLock.Lock()
+	defer UniverseLock.Unlock()
+	universe.BroadcastNewTimeline(t)
 	return true
 }
 

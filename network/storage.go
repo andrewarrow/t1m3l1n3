@@ -21,14 +21,14 @@ func hasBit(n uint64, pos byte) bool {
 
 func (u *Universe) BroadcastNewTimeline(t *Timeline) {
 	for i := byte(0); i < u.UserCount; i++ {
-		if u.ShouldDeliverFrom(t.From, i+1) {
+		if u.ShouldDeliverFrom(t.From, i) {
 			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
 		}
 	}
 }
 
 func (u *Universe) ShouldDeliverFrom(username string, to byte) bool {
-	from := u.UsernameToIndex(username)
+	from := u.UsernameToIndex(username) - 1
 	return hasBit(u.Following[to], from)
 }
 
@@ -59,7 +59,6 @@ func NewUniverse() *Universe {
 		welcome = append(welcome, &t)
 	}
 	for i := 0; i < size; i++ {
-		// 18446744073709551615
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)
 		u.Inboxes = append(u.Inboxes, welcome)
 	}
