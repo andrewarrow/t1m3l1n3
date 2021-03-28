@@ -10,6 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/justincampbell/timeago"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -73,6 +75,10 @@ type Timeline struct {
 	Origin   string `json:"origin"`
 }
 
+func (t *Timeline) AsTime() time.Time {
+	return time.Unix(t.PostedAt, 0)
+}
+
 func TimelineFromMap(m map[string]string) *Timeline {
 	t := Timeline{}
 	t.Text = m["text"]
@@ -124,7 +130,8 @@ func DisplayInboxTimelines(s string) {
 	json.Unmarshal([]byte(s), &tw)
 	fmt.Println("Inbox")
 	for i, t := range tw.Inbox {
-		fmt.Printf("%02d. %20s %s\n", i+1, t.From, t.Text)
+		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
+			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
 func DisplayProfileTimelines(s string) {
@@ -132,7 +139,8 @@ func DisplayProfileTimelines(s string) {
 	json.Unmarshal([]byte(s), &tw)
 	fmt.Println("Profile")
 	for i, t := range tw.Profile {
-		fmt.Printf("%02d. %20s %s\n", i+1, t.From, t.Text)
+		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
+			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
 func PostNewTimeline(text, from string) {
