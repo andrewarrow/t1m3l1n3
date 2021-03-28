@@ -1,18 +1,24 @@
 package network
 
 import (
+	"clt/cli"
 	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-var universe *Universe
+var uid1 string
+var uid2 string
+var universes map[string]*Universe = map[string]*Universe{}
 var globalInOut *InOut
 
 func Start(c chan bool, port, host string) {
 
-	universe = NewUniverse()
+	uid1 = cli.MakeUuid()
+	uid2 = cli.MakeUuid()
+	universes[uid1] = NewUniverse()
+	universes[uid2] = NewUniverse()
 	fmt.Println("starting...")
 
 	r := gin.Default()

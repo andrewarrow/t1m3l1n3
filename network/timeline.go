@@ -17,9 +17,9 @@ import (
 
 func ShowInbox(c *gin.Context) {
 	from := c.Request.Header["Username"]
-	fromIndex := universe.UsernameToIndex(from[0]) - 1
+	fromIndex := universes[uid1].UsernameToIndex(from[0]) - 1
 	UniverseLock.Lock()
-	c.JSON(200, gin.H{"inbox": universe.Inboxes[fromIndex]})
+	c.JSON(200, gin.H{"inbox": universes[uid1].Inboxes[fromIndex]})
 	UniverseLock.Unlock()
 }
 
@@ -27,7 +27,7 @@ func ToggleFollowPost(c *gin.Context) {
 	from := c.Request.Header["Username"]
 	to := c.Param("username")
 	UniverseLock.Lock()
-	bin := universe.ToggleFollow(from[0], to)
+	bin := universes[uid1].ToggleFollow(from[0], to)
 	c.JSON(200, gin.H{"mask": bin})
 	UniverseLock.Unlock()
 }
@@ -36,8 +36,8 @@ func ShowTimelines(c *gin.Context) {
 
 	username := c.Param("username")
 	UniverseLock.Lock()
-	fromIndex := universe.UsernameToIndex(username) - 1
-	c.JSON(200, gin.H{"profile": universe.Profile[fromIndex]})
+	fromIndex := universes[uid1].UsernameToIndex(username) - 1
+	c.JSON(200, gin.H{"profile": universes[uid1].Profile[fromIndex]})
 	UniverseLock.Unlock()
 }
 
@@ -125,7 +125,7 @@ func (t *Timeline) AddToUniverse() bool {
 	fmt.Println("Lock1...")
 	UniverseLock.Lock()
 	fmt.Println("Lock2...")
-	universe.BroadcastNewTimeline(t)
+	universes[uid1].BroadcastNewTimeline(t)
 	fmt.Println("Lock3...")
 	UniverseLock.Unlock()
 	fmt.Println("Lock4...")
