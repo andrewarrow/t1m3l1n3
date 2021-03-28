@@ -8,17 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var uid1 string
-var uid2 string
+var uidIndex byte = 0
+var uids []string = []string{}
 var universes map[string]*Universe = map[string]*Universe{}
 var globalInOut *InOut
 
 func Start(c chan bool, port, host string) {
 
-	uid1 = cli.MakeUuid()
-	uid2 = cli.MakeUuid()
-	universes[uid1] = NewUniverse()
-	universes[uid2] = NewUniverse()
+	for i := 0; i < size; i++ {
+		id := cli.MakeUuid()
+		uids = append(uids, id)
+		universes[id] = NewUniverse()
+	}
 	fmt.Println("starting...")
 
 	r := gin.Default()
