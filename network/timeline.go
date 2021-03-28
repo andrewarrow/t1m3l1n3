@@ -122,9 +122,13 @@ func CreateTimeline(c *gin.Context) {
 }
 
 func (t *Timeline) AddToUniverse() bool {
+	fmt.Println("Lock1...")
 	UniverseLock.Lock()
-	defer UniverseLock.Unlock()
+	fmt.Println("Lock2...")
 	universe.BroadcastNewTimeline(t)
+	fmt.Println("Lock3...")
+	UniverseLock.Unlock()
+	fmt.Println("Lock4...")
 	return true
 }
 

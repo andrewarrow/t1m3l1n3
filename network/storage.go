@@ -29,16 +29,18 @@ func (u *Universe) BroadcastNewTimeline(t *Timeline) {
 	log.Println("END BroadcastNewTimeline")
 }
 
-func (u *Universe) ToggleFollow(from, to string) string {
+func (u *Universe) ToggleFollow(to, from string) string {
 	toIndex := u.UsernameToIndex(to) - 1
+	fromIndex := u.UsernameToIndex(from) - 1
+	u.Following[toIndex] = uint64(Bits(u.Following[toIndex]) ^ LookupBit(fromIndex))
 	/*
-		fromIndex := u.UsernameToIndex(from) - 1
-			if Has(u.Following[toIndex], fromIndex) {
-				u.Following[toIndex] &= clearBit(u.Following[toIndex], fromIndex)
-			} else {
-				u.Following[toIndex] &= setBit(u.Following[toIndex], fromIndex)
-			}
+		if Has(u.Following[toIndex], fromIndex) {
+			u.Following[toIndex] &= clearBit(u.Following[toIndex], fromIndex)
+		} else {
+			u.Following[toIndex] &= setBit(u.Following[toIndex], fromIndex)
+		}
 	*/
+
 	return fmt.Sprintf("%b", u.Following[toIndex])
 }
 func (u *Universe) ShouldDeliverFrom(from, to byte) bool {

@@ -47,7 +47,7 @@ func main() {
 		fmt.Println(s)
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
-		//fmt.Println(s)
+		fmt.Println(s)
 		network.DisplayInboxTimelines(s)
 	} else if command == "servers" {
 		s := network.DoGet("servers")
@@ -61,6 +61,7 @@ func main() {
 		for _, person := range people {
 			for _, word := range words {
 				network.PostNewTimeline(word, person)
+				time.Sleep(time.Millisecond * 20)
 			}
 		}
 	} else if command == "post" {
