@@ -13,6 +13,7 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clt ls        # List recent timelines")
+	fmt.Println("  clt profile   # List recent timelines")
 	fmt.Println("  clt post      # Post new timeline with --text=hi")
 	fmt.Println("  clt auth      # Set your username --name=")
 	fmt.Println("  clt servers   # List the main list")
@@ -31,10 +32,14 @@ func main() {
 	}
 	command := os.Args[1]
 
-	if command == "ls" {
+	if command == "profile" {
 		s := network.DoGet(fmt.Sprintf("timelines/%s", cli.Username))
 		//fmt.Println(s)
 		network.DisplayTimelines(s)
+	} else if command == "ls" {
+		s := network.DoGet(fmt.Sprintf("timelines"))
+		fmt.Println(s)
+		//network.DisplayTimelines(s)
 	} else if command == "servers" {
 		s := network.DoGet("servers")
 		fmt.Println(s)

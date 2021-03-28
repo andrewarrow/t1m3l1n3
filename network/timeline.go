@@ -14,6 +14,11 @@ import (
 )
 
 func ShowInbox(c *gin.Context) {
+	username := c.Request.Header["Username"]
+	UniverseLock.Lock()
+	fromIndex := universe.UsernameToIndex(username[0]) - 1
+	c.JSON(200, gin.H{"inbox": universe.Inboxes[fromIndex]})
+	UniverseLock.Unlock()
 }
 func ShowTimelines(c *gin.Context) {
 

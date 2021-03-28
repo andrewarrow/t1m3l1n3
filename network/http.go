@@ -2,6 +2,7 @@ package network
 
 import (
 	"bytes"
+	"clt/cli"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -23,6 +24,7 @@ func DoGet(route string) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("GET", urlString, nil)
 	request.Header.Set("User-Agent", agent)
+	request.Header.Set("Username", cli.Username)
 	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Timeout: time.Second * 500}
 	return DoHttpRead("GET", route, client, request)
