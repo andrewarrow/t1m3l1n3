@@ -16,12 +16,22 @@ import (
 )
 
 func ShowInbox(c *gin.Context) {
-	username := c.Request.Header["Username"]
+	from := c.Request.Header["Username"]
+	fromIndex := universe.UsernameToIndex(from[0]) - 1
 	UniverseLock.Lock()
-	fromIndex := universe.UsernameToIndex(username[0]) - 1
 	c.JSON(200, gin.H{"inbox": universe.Inboxes[fromIndex]})
 	UniverseLock.Unlock()
 }
+
+func ToggleFollowPost(c *gin.Context) {
+	from := c.Request.Header["Username"]
+	to := c.Param("username")
+	UniverseLock.Lock()
+	bin := universe.ToggleFollow(from[0], to)
+	c.JSON(200, gin.H{"mask": bin})
+	UniverseLock.Unlock()
+}
+
 func ShowTimelines(c *gin.Context) {
 
 	username := c.Param("username")

@@ -20,6 +20,7 @@ func Start(c chan bool, port, host string) {
 	r.GET("/timelines/:username", ShowTimelines)
 	r.POST("/timelines", CreateTimeline)
 	r.POST("/timelines/notify", NotifyTimeline)
+	r.POST("/follow/:username", ToggleFollowPost)
 	if host == "main" {
 		r.GET("/servers", ShowServers)
 		r.POST("/servers", AddServer)

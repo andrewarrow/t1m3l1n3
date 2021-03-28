@@ -58,6 +58,7 @@ func DoPost(route string, payload []byte) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("POST", urlString, body)
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Username", cli.Username)
 	client := &http.Client{Timeout: time.Second * 50}
 
 	return DoHttpRead("POST", route, client, request)

@@ -18,6 +18,7 @@ func PrintHelp() {
 	fmt.Println("  clt auth      # Set your username --name=")
 	fmt.Println("  clt servers   # List the main list")
 	fmt.Println("  clt simulate  # Simulate traffic")
+	fmt.Println("  clt toggle    # Toggle follow")
 	fmt.Println("")
 }
 
@@ -33,9 +34,17 @@ func main() {
 	command := os.Args[1]
 
 	if command == "profile" {
-		s := network.DoGet(fmt.Sprintf("timelines/%s", cli.Username))
+		username := cli.Username
+		if cli.ArgMap["name"] != "" {
+			username = cli.ArgMap["name"]
+		}
+		s := network.DoGet(fmt.Sprintf("timelines/%s", username))
 		//fmt.Println(s)
 		network.DisplayProfileTimelines(s)
+	} else if command == "toggle" {
+		cli.EnsureParamPass("name")
+		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
+		fmt.Println(s)
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
