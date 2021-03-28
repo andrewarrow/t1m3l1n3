@@ -19,6 +19,7 @@ func PrintHelp() {
 	fmt.Println("  clt servers   # List the main list")
 	fmt.Println("  clt simulate  # Simulate traffic")
 	fmt.Println("  clt toggle    # Toggle follow")
+	fmt.Println("  clt universe  # Display universe_id")
 	fmt.Println("")
 }
 
@@ -47,8 +48,11 @@ func main() {
 		fmt.Println(s)
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
-		fmt.Println(s)
+		//fmt.Println(s)
 		network.DisplayInboxTimelines(s)
+	} else if command == "universe" {
+		s := network.DoGet(fmt.Sprintf("universe"))
+		fmt.Println(s)
 	} else if command == "servers" {
 		s := network.DoGet("servers")
 		fmt.Println(s)

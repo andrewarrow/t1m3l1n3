@@ -146,6 +146,9 @@ func DisplayInboxTimelines(s string) {
 	for i, t := range tw.Inbox {
 		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
+		if i > 20 {
+			break
+		}
 	}
 }
 func DisplayProfileTimelines(s string) {
