@@ -55,7 +55,8 @@ func mapBody(c *gin.Context) map[string]string {
 }
 
 type TimelineWrapper struct {
-	From map[string][]Timeline `json:"from"`
+	// {"profile":[{"text":"hi2","from":"andrew","posted_at":1616960612,"origin":"localhost:8080"},{"text":"hi","from":"andrew","posted_at":1616960598,"origin":"localhost:8080"}]}
+	Profile []Timeline `json:"profile"`
 }
 
 type Timeline struct {
@@ -113,13 +114,10 @@ func TellOutAboutNewTimeline(t *Timeline, out string) {
 
 func DisplayTimelines(s string) {
 	var tw TimelineWrapper
-	fmt.Println(s)
 	json.Unmarshal([]byte(s), &tw)
-	for k, v := range tw.From {
-		fmt.Println(k)
-		for i, t := range v {
-			fmt.Printf("%02d. %s\n", i+1, t.Text)
-		}
+	fmt.Println("Profile")
+	for i, t := range tw.Profile {
+		fmt.Printf("%02d. %20s %s\n", i+1, t.From, t.Text)
 	}
 }
 func PostNewTimeline(text, from string) {
