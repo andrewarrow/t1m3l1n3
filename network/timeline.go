@@ -13,6 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var one64 [][]byte = [][]byte{}
+var one384 [][]byte = [][]byte{}
+var one192 [][]byte = [][]byte{}
+
 func ShowTimelines(c *gin.Context) {
 
 	ByFromLock.Lock()
@@ -95,7 +99,7 @@ func CreateTimeline(c *gin.Context) {
 	t.Origin = globalInOut.Name
 
 	if t.AddToByKey() == true {
-		TellOutAboutNewTimeline(&t, globalInOut.Out)
+		//TellOutAboutNewTimeline(&t, globalInOut.Out)
 	}
 }
 
@@ -104,9 +108,9 @@ func (t *Timeline) AddToByKey() bool {
 	ByFromLock.Lock()
 	defer ByFromLock.Unlock()
 
-	if ByKey[key] != nil && ByKey[key].Origin == globalInOut.Name {
-		return false
-	}
+	//if ByKey[key] != nil && ByKey[key].Origin == globalInOut.Name {
+	//	return false
+	//}
 
 	ByKey[key] = t
 	ByFrom = map[string][]*Timeline{}
@@ -135,4 +139,11 @@ func DisplayTimelines(s string) {
 			fmt.Printf("%02d. %s\n", i+1, t.Text)
 		}
 	}
+}
+func PostNewTimeline(text, from string) {
+	s := `text=%s
+username=%s
+`
+	payload := fmt.Sprintf(s, text, from)
+	DoPost("timelines", []byte(payload))
 }
