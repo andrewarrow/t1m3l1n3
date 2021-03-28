@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -20,26 +21,35 @@ func hasBit(n uint64, pos byte) bool {
 }
 
 func (u *Universe) BroadcastNewTimeline(t *Timeline) {
+	log.Println("BroadcastNewTimeline")
 	for i := byte(0); i < u.UserCount; i++ {
+		log.Println("ShouldDeliverFrom", t.From, i)
 		if u.ShouldDeliverFrom(t.From, i) {
+			log.Println(" TRUE")
 			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
 		}
 	}
+	log.Println("END BroadcastNewTimeline")
 }
 
 func (u *Universe) ShouldDeliverFrom(username string, to byte) bool {
+	log.Println("  ShouldDeliverFrom", username, to)
 	from := u.UsernameToIndex(username) - 1
+	log.Println("  ShouldDeliverFrom", from)
 	return hasBit(u.Following[to], from)
 }
 
 func (u *Universe) UsernameToIndex(username string) byte {
+	log.Println("    UsernameToIndex", username)
 	if u.UserCount == size {
+		log.Println("    SIZE")
 		return 0
 	}
 	if u.Usernames[username] == 0 {
 		u.UserCount++
 		u.Usernames[username] = u.UserCount
 	}
+	log.Println("    u.Usernames[username]", u.Usernames[username])
 	return u.Usernames[username]
 }
 

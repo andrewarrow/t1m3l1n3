@@ -16,7 +16,7 @@ import (
 func ShowTimelines(c *gin.Context) {
 
 	UniverseLock.Lock()
-	c.JSON(200, gin.H{"from": universe})
+	c.JSON(200, gin.H{"from": universe.Inboxes})
 	UniverseLock.Unlock()
 }
 
@@ -109,6 +109,7 @@ func TellOutAboutNewTimeline(t *Timeline, out string) {
 
 func DisplayTimelines(s string) {
 	var tw TimelineWrapper
+	fmt.Println(s)
 	json.Unmarshal([]byte(s), &tw)
 	for k, v := range tw.From {
 		fmt.Println(k)
