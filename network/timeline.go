@@ -13,10 +13,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ShowInbox(c *gin.Context) {
+}
 func ShowTimelines(c *gin.Context) {
 
+	username := c.Param("username")
 	UniverseLock.Lock()
-	c.JSON(200, gin.H{"from": universe.Inboxes})
+	fromIndex := universe.UsernameToIndex(username) - 1
+	c.JSON(200, gin.H{"profile": universe.Profile[fromIndex]})
 	UniverseLock.Unlock()
 }
 

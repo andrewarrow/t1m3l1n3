@@ -29,6 +29,7 @@ func EnsureParamPass(vars ...string) {
 func ReadInGlobalVars() {
 	ArgMap = argsToMap()
 	Username = persist.ReadFromFile("USERNAME")
+	Username = strings.TrimSpace(Username)
 	ServerId = persist.ReadFromFile("SERVER_ID")
 }
 

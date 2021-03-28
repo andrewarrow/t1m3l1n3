@@ -32,9 +32,9 @@ func main() {
 	command := os.Args[1]
 
 	if command == "ls" {
-		s := network.DoGet("timelines")
-		//fmt.Println(s)
-		network.DisplayTimelines(s)
+		s := network.DoGet(fmt.Sprintf("timelines/%s", cli.Username))
+		fmt.Println(s)
+		//network.DisplayTimelines(s)
 	} else if command == "servers" {
 		s := network.DoGet("servers")
 		fmt.Println(s)
