@@ -12,29 +12,6 @@ import (
 	"os"
 )
 
-/*
-1. user makes keys on local hard drive
-2. user proove he's "username" on twitter by posting signed message
-3. user enter url of tweet
-4. now we know only the person with this private key on his hard drive could have tweeted that.
-5. the datetime of the tweet says who was 1st to do this
-
-
-1. Upload your pub_key + username to main node
-
-Node 1
-
-"username" posts hi
-
-   1. username is avail
-	    assume its ok
-	 2. username is in use
-
-
-Node 2
-
-*/
-
 func KeyGen() {
 	pubkeyCurve := elliptic.P256()
 
@@ -63,5 +40,15 @@ func KeyGen() {
 	keyPub := b64.StdEncoding.EncodeToString(pemEncodedPub)
 	persist.SaveToFile("PUBLIC_KEY", keyPub)
 	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
+
+	fmt.Printf("\n\n")
+	fmt.Printf("-------------------\n")
+	fmt.Printf("COPY AND PASTE DATA BELOW AND SEND YOURSELF AN EMAIL \n")
+	fmt.Printf("THERE IS NO FORGET PASSWORD LINK THIS IS IT \n")
+	fmt.Printf("-------------------\n")
+	fmt.Printf("\n\n")
+	fmt.Printf("%s\n", key)
+	fmt.Printf("%s\n", keyPub)
+	fmt.Printf("\n\n")
 
 }
