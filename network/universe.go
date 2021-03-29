@@ -27,6 +27,23 @@ type Universe struct {
 	Id        string
 }
 
+func MakeUniverses() []string {
+	for i := 0; i < size; i++ {
+		u := NewUniverse()
+		uids = append(uids, u.Id)
+		universes[u.Id] = u
+	}
+	return uids
+}
+func MakeUniversesWithIds(ids []string) []string {
+	for i := 0; i < size; i++ {
+		u := NewUniverse()
+		u.Id = ids[i]
+		uids = append(uids, u.Id)
+		universes[u.Id] = u
+	}
+	return uids
+}
 func (u *Universe) MakeStats() map[string]interface{} {
 	m := map[string]interface{}{}
 

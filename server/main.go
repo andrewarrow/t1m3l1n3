@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -22,9 +23,11 @@ func main() {
 	persist.Init()
 	cli.ReadInGlobalVars()
 
-	if cli.ServerId == "" {
-		cli.ServerId = cli.MakeUuid()
-		persist.SaveToFile("SERVER_ID", cli.ServerId)
+	if len(cli.UniverseIds) == 0 {
+		ids := network.MakeUniverses()
+		persist.SaveToFile("UNIVERSE_IDS", strings.Join(ids, ","))
+	} else {
+		network.MakeUniversesWithIds(cli.UniverseIds)
 	}
 
 	if len(os.Args) == 1 {

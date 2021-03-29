@@ -10,7 +10,7 @@ import (
 
 var ArgMap = map[string]string{}
 var Username string
-var ServerId string
+var UniverseIds = []string{}
 
 func MakeUuid() string {
 	b := make([]byte, 16)
@@ -30,7 +30,10 @@ func ReadInGlobalVars() {
 	ArgMap = argsToMap()
 	Username = persist.ReadFromFile("USERNAME")
 	Username = strings.TrimSpace(Username)
-	ServerId = persist.ReadFromFile("SERVER_ID")
+	ids := persist.ReadFromFile("UNIVERSE_IDS")
+	if ids != "" {
+		UniverseIds = strings.Split(ids, ",")
+	}
 }
 
 func DisplayString(s string, size int) string {

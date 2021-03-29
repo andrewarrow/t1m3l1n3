@@ -14,11 +14,6 @@ var globalInOut *InOut
 
 func Start(c chan bool, port, host string) {
 
-	for i := 0; i < size; i++ {
-		u := NewUniverse()
-		uids = append(uids, u.Id)
-		universes[u.Id] = u
-	}
 	fmt.Println("starting...")
 
 	r := gin.Default()
