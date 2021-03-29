@@ -1,7 +1,6 @@
 package network
 
 import (
-	"clt/cli"
 	"fmt"
 	"os"
 
@@ -16,9 +15,9 @@ var globalInOut *InOut
 func Start(c chan bool, port, host string) {
 
 	for i := 0; i < size; i++ {
-		id := cli.MakeUuid()
-		uids = append(uids, id)
-		universes[id] = NewUniverse()
+		u := NewUniverse()
+		uids = append(uids, u.Id)
+		universes[u.Id] = u
 	}
 	fmt.Println("starting...")
 
