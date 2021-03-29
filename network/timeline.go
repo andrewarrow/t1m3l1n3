@@ -19,9 +19,14 @@ func ShowInbox(c *gin.Context) {
 	from := c.Request.Header["Username"]
 	fmt.Println(from)
 	UniverseLock.Lock()
+	defer UniverseLock.Unlock()
 	fromIndex := universes[uids[uidIndex]].UsernameToIndex(from[0]) - 1
-	c.JSON(200, gin.H{"inbox": universes[uids[uidIndex]].Inboxes[fromIndex]})
-	UniverseLock.Unlock()
+	if fromIndex < 255 {
+		c.JSON(200, gin.H{"inbox": universes[uids[uidIndex]].Inboxes[fromIndex]})
+		return
+	}
+	fromIndex = universes[uids[uidIndex+1]].UsernameToIndex(from[0]) - 1
+	c.JSON(200, gin.H{"inbox": universes[uids[uidIndex+1]].Inboxes[fromIndex]})
 }
 
 func ToggleFollowPost(c *gin.Context) {
