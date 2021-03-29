@@ -73,15 +73,20 @@ func ShowUniverse(c *gin.Context) {
 func (u *Universe) Marshal() map[string]interface{} {
 	m := map[string]interface{}{}
 	FollowingPayload := []string{}
+	UsernameKeysPayload := map[string]string{}
 
 	for _, val := range u.Following {
 		FollowingPayload = append(FollowingPayload, fmt.Sprintf("%d", val))
+	}
+	for k, val := range u.UsernameKeys {
+		enc := b64.StdEncoding.EncodeToString(val)
+		UsernameKeysPayload[k] = enc
 	}
 	m["user_count"] = u.UserCount
 	m["id"] = u.Id
 	m["following"] = FollowingPayload
 	m["usernames"] = u.Usernames
-	m["username_keys"] = u.UsernameKeys
+	m["username_keys"] = UsernameKeysPayload
 
 	return m
 }

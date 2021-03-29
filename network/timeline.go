@@ -102,6 +102,12 @@ func NotifyTimeline(c *gin.Context) {
 }
 
 func VerifySig(sig, from string) bool {
+	UniverseLock.Lock()
+	defer UniverseLock.Unlock()
+	pubKey := universes[uids[uidIndex]].UsernameKeys[from]
+	if len(pubKey) == 0 {
+		return false
+	}
 	return true
 }
 
