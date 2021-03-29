@@ -101,6 +101,10 @@ func NotifyTimeline(c *gin.Context) {
 	//t.AddToByKey()
 }
 
+func VerifySig(sig, from string) bool {
+	return true
+}
+
 func CreateTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
 	t := Timeline{}
@@ -108,6 +112,12 @@ func CreateTimeline(c *gin.Context) {
 	t.From = m["username"]
 	sig := m["sig"]
 	fmt.Println("sig", sig)
+
+	if VerifySig(sig, t.From) == false {
+		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
+		return
+	}
+
 	t.PostedAt = time.Now().Unix()
 	t.Origin = globalInOut.Name
 

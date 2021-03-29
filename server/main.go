@@ -39,6 +39,7 @@ func main() {
 	if command == "start" {
 		cli.EnsureParamPass("port", "host")
 		c := make(chan bool, 1)
+		go network.BackgroundThread()
 		go network.Start(c, cli.ArgMap["port"], cli.ArgMap["host"])
 		<-c
 	} else if command == "config" {

@@ -10,14 +10,13 @@ import (
 )
 
 type Universe struct {
-	Following        []uint64
-	Inboxes          map[byte][]*Timeline
-	Usernames        map[string]byte
-	UsernameKeys     map[string][]byte
-	UsernameVerified map[string]string
-	Profile          map[byte][]*Timeline
-	UserCount        byte
-	Id               string
+	Following    []uint64
+	Inboxes      map[byte][]*Timeline
+	Usernames    map[string]byte
+	UsernameKeys map[string][]byte
+	Profile      map[byte][]*Timeline
+	UserCount    byte
+	Id           string
 }
 
 func MakeUniverses() []string {
@@ -46,6 +45,17 @@ func ShowUniverse(c *gin.Context) {
 	c.JSON(200, gin.H{"items": items})
 }
 
+func (u *Universe) Marshal() map[string]interface{} {
+	m := map[string]interface{}{}
+
+	m["user_count"] = u.UserCount
+	m["id"] = u.Id
+	m["following"] = u.Following
+	m["usernames"] = u.Usernames
+	m["username_keys"] = u.UsernameKeys
+
+	return m
+}
 func (u *Universe) MakeStats() map[string]interface{} {
 	m := map[string]interface{}{}
 
@@ -72,7 +82,7 @@ func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
 		return false
 	}
 	u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
-	for i := byte(0); i < u.UserCount; i++ {
+	for i := byte(0); i < size; i++ {
 		if u.ShouldDeliverFrom(fromIndex, i) {
 			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
 		}
