@@ -2,6 +2,8 @@ package network
 
 import (
 	"clt/cli"
+	"clt/persist"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -31,6 +33,23 @@ func MakeUniversesWithIds(ids []string) []string {
 	for i := 0; i < size; i++ {
 		u := NewUniverse()
 		u.Id = ids[i]
+		jsonString := persist.ReadFromFile(u.Id)
+		if jsonString != "" {
+			var m map[string]interface{}
+			json.Unmarshal([]byte(jsonString), &m)
+			f := m["following"].([]interface{})
+			u.Following = []uint64{}
+			for _, v := range f {
+				u.Following = append(u.Following, uint64(v.(float64)))
+			}
+			u.UserCount = byte(m["user_count"].(float64))
+			other := m["usernames"].(map[string]interface{})
+			for k, v := range other {
+				u.Usernames[k] = byte(v.(float64))
+			}
+			//u.UsernameKeys = m["username_keys"].(map[string][]byte)
+			fmt.Println("u", u)
+		}
 		uids = append(uids, u.Id)
 		universes[u.Id] = u
 	}
@@ -47,10 +66,14 @@ func ShowUniverse(c *gin.Context) {
 
 func (u *Universe) Marshal() map[string]interface{} {
 	m := map[string]interface{}{}
+	FollowingPayload := []string{}
 
+	for _, val := range u.Following {
+		FollowingPayload = append(FollowingPayload, fmt.Sprintf("%d", val))
+	}
 	m["user_count"] = u.UserCount
 	m["id"] = u.Id
-	m["following"] = u.Following
+	m["following"] = FollowingPayload
 	m["usernames"] = u.Usernames
 	m["username_keys"] = u.UsernameKeys
 
