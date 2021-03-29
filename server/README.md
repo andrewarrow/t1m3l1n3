@@ -1,3 +1,4 @@
+./server start --port=8080 --host=main
 
 
 

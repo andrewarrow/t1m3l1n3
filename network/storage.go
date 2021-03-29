@@ -10,7 +10,7 @@ const size = 64
 
 type Universe struct {
 	Following []uint64
-	Inboxes   [][]*Timeline
+	Inboxes   map[byte][]*Timeline
 	Usernames map[string]byte
 	Profile   map[byte][]*Timeline
 	UserCount byte
@@ -61,19 +61,19 @@ func NewUniverse() *Universe {
 	u.Usernames = map[string]byte{}
 	u.UsernameToIndex("sysop")
 	u.Profile = map[byte][]*Timeline{}
+	u.Inboxes = map[byte][]*Timeline{}
 
 	t := Timeline{}
 	t.Text = "Welcome to CLT"
 	t.From = "sysop"
 	t.PostedAt = time.Now().Unix()
 	u.Profile[0] = []*Timeline{&t}
-	welcome := []*Timeline{}
-	for i := 0; i < 1; i++ {
-		welcome = append(welcome, &t)
-	}
 	for i := 0; i < size; i++ {
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)
-		u.Inboxes = append(u.Inboxes, welcome)
+	}
+	for i := byte(0); i < u.UserCount; i++ {
+		welcome := []*Timeline{&t}
+		u.Inboxes[i] = welcome
 	}
 
 	fmt.Println(u.Following)

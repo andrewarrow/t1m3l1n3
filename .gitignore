@@ -1,4 +1,5 @@
 clt
+vendor
 go.sum
 client/client
 server/server
