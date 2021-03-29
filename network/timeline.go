@@ -117,9 +117,13 @@ func VerifySig(msg, r, s, from string) bool {
 		return false
 	}
 
-	blockPub, _ := pem.Decode(pubKey)
+	fmt.Println(pubKey)
+	blockPub, e := pem.Decode(pubKey)
+	fmt.Println(blockPub, e)
 	x509EncodedPub := blockPub.Bytes
-	genericPublicKey, _ := x509.ParsePKIXPublicKey(x509EncodedPub)
+	fmt.Println(blockPub.Bytes)
+	genericPublicKey, ee := x509.ParsePKIXPublicKey(x509EncodedPub)
+	fmt.Println(genericPublicKey, ee)
 	publicKey := genericPublicKey.(*ecdsa.PublicKey)
 
 	var h hash.Hash

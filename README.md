@@ -1,6 +1,34 @@
 # CLT
 command line timelines
 
+# Vision
+Picture a 64x64 chessboard and place a pawn in every square.
+By default in a universe, you follow 63 other people and they
+each follow you.
+
+Now find your row and remove a pawn from column 7 and 14.
+You are not following user 7 and user 14 anymore.
+
+When they go to post something a pointer to their latest message
+will be placed in each user's inbox, if they user follows them.
+
+This is what Following []unit64 is for and it means:
+
+1111111111111111111111111111111111111111111111111111111111111111
+1111111011111101111111111111111111111111111111111111111111111111
+1111111111111111111111111111111111111111111111111111111111111111
+
+A giant, efficient grid to run a small twitter like message
+board for just 64 people.
+
+When this universe first boots up, all usernames are available
+and it's first come first served to grab a two to twenty-two length
+username. You send in your desired name, and a public key, and
+forever more this node will give you and your private key the right
+to post as you.
+
+
+
 # About
 anyone is free to take the server binary and run it on a machine with
 a nice amount of RAM and publish the IP or domain name of your
