@@ -36,6 +36,10 @@ func main() {
 	}
 	command := os.Args[1]
 
+	if persist.ReadFromFile("PUBLIC_KEY") == "" {
+		KeyGen()
+	}
+
 	if command == "profile" {
 		username := cli.Username
 		if cli.ArgMap["name"] != "" {

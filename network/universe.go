@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,8 @@ func MakeUniversesWithIds(ids []string) []string {
 			f := m["following"].([]interface{})
 			u.Following = []uint64{}
 			for _, v := range f {
-				u.Following = append(u.Following, uint64(v.(float64)))
+				val, _ := strconv.ParseUint(v.(string), 10, 64)
+				u.Following = append(u.Following, val)
 			}
 			u.UserCount = byte(m["user_count"].(float64))
 			other := m["usernames"].(map[string]interface{})
