@@ -63,17 +63,19 @@ func (u *Universe) MakeStats() map[string]interface{} {
 
 	return m
 }
-func (u *Universe) BroadcastNewTimeline(t *Timeline) {
-	log.Println("BroadcastNewTimeline")
+func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
 	fromIndex := u.UsernameToIndex(t.From) - 1
+	if fromIndex == 255 {
+		// no more room
+		return false
+	}
 	u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
 	for i := byte(0); i < u.UserCount; i++ {
-		log.Println("ShouldDeliverFrom", t.From, i)
 		if u.ShouldDeliverFrom(fromIndex, i) {
 			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
 		}
 	}
-	log.Println("END BroadcastNewTimeline")
+	return true
 }
 
 func (u *Universe) ToggleFollow(to, from string) string {
@@ -89,11 +91,11 @@ func (u *Universe) ShouldDeliverFrom(from, to byte) bool {
 
 func (u *Universe) UsernameToIndex(username string) byte {
 	log.Println("    UsernameToIndex", username)
-	if u.UserCount == size {
-		log.Println("    SIZE")
-		return 0
-	}
 	if u.Usernames[username] == 0 {
+		if u.UserCount == size {
+			log.Println("    SIZE")
+			return 0
+		}
 		u.UserCount++
 		u.Usernames[username] = u.UserCount
 	}

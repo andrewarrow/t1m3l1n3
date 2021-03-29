@@ -59,8 +59,14 @@ func main() {
 	} else if command == "auth" {
 		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 	} else if command == "simulate" {
-		people := []string{"bob", "alice", "candy", "mike", "dave", "chris", "pam"}
-		words := []string{"hey", "hello", "what up?", "hi there", "ok then"}
+		people := []string{"bob", "alice", "candy", "mike", "dave", "chris", "pam", "abigail", "emma", "luna",
+			"logan", "owen", "liam", "sophia", "santiago", "joe", "dan", "mark", "charles", "kevin",
+			"logan2", "owen2", "liam2", "sophia2", "santiago2", "joe2", "dan2", "mark2", "charles2", "kevin2",
+			"logan3", "owen3", "liam3", "sophia3", "santiago3", "joe3", "dan3", "mark3", "charles3", "kevin3",
+			"logan4", "owen4", "liam4", "sophia4", "santiago4", "joe4", "dan4", "mark4", "charles4", "kevin4",
+			"logan5", "owen5", "liam5", "sophia5", "santiago5", "joe5", "dan5", "mark5", "charles5", "kevin5",
+			"logan6", "owen6"}
+		words := []string{"hi there", "ok then"}
 
 		for _, person := range people {
 			for _, word := range words {

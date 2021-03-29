@@ -119,18 +119,20 @@ func CreateTimeline(c *gin.Context) {
 
 	if t.AddToUniverse() == true {
 		//TellOutAboutNewTimeline(&t, globalInOut.Out)
+		c.JSON(200, gin.H{"ok": true})
+		return
 	}
+	c.JSON(422, gin.H{"ok": false})
 }
 
 func (t *Timeline) AddToUniverse() bool {
-	fmt.Println("Lock1...")
 	UniverseLock.Lock()
-	fmt.Println("Lock2...")
-	universes[uids[uidIndex]].BroadcastNewTimeline(t)
-	fmt.Println("Lock3...")
-	UniverseLock.Unlock()
-	fmt.Println("Lock4...")
-	return true
+	defer UniverseLock.Unlock()
+	if universes[uids[uidIndex]].BroadcastNewTimeline(t) {
+		fmt.Println("Add User or Existing User")
+		return true
+	}
+	return false
 }
 
 func TellOutAboutNewTimeline(t *Timeline, out string) {
