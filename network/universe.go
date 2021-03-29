@@ -32,6 +32,17 @@ func (u *Universe) MakeStats() map[string]interface{} {
 
 	m["user_count"] = u.UserCount
 	m["id"] = u.Id
+	m["inboxes_count"] = len(u.Inboxes)
+	inboxesStats := map[byte]int{}
+	profileStats := map[byte]int{}
+	for k, v := range u.Inboxes {
+		inboxesStats[k] = len(v)
+	}
+	for k, v := range u.Profile {
+		profileStats[k] = len(v)
+	}
+	m["inboxes"] = inboxesStats
+	m["profile"] = profileStats
 
 	return m
 }

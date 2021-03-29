@@ -17,8 +17,9 @@ import (
 
 func ShowInbox(c *gin.Context) {
 	from := c.Request.Header["Username"]
-	fromIndex := universes[uids[uidIndex]].UsernameToIndex(from[0]) - 1
+	fmt.Println(from)
 	UniverseLock.Lock()
+	fromIndex := universes[uids[uidIndex]].UsernameToIndex(from[0]) - 1
 	c.JSON(200, gin.H{"inbox": universes[uids[uidIndex]].Inboxes[fromIndex]})
 	UniverseLock.Unlock()
 }
