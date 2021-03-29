@@ -129,7 +129,11 @@ func (t *Timeline) AddToUniverse() bool {
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	if universes[uids[uidIndex]].BroadcastNewTimeline(t) {
-		fmt.Println("Add User or Existing User")
+		fmt.Println("Add User or Existing User", uidIndex)
+		return true
+	}
+	if universes[uids[uidIndex+1]].BroadcastNewTimeline(t) {
+		fmt.Println("Add User or Existing User", uidIndex+1)
 		return true
 	}
 	return false

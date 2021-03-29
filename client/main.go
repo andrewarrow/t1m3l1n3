@@ -65,7 +65,7 @@ func main() {
 			"logan3", "owen3", "liam3", "sophia3", "santiago3", "joe3", "dan3", "mark3", "charles3", "kevin3",
 			"logan4", "owen4", "liam4", "sophia4", "santiago4", "joe4", "dan4", "mark4", "charles4", "kevin4",
 			"logan5", "owen5", "liam5", "sophia5", "santiago5", "joe5", "dan5", "mark5", "charles5", "kevin5",
-			"logan6", "owen6"}
+			"logan6", "owen6", "liam6", "sophia6"}
 		words := []string{"hi there", "ok then"}
 
 		for _, person := range people {
