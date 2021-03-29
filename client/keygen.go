@@ -32,4 +32,13 @@ func KeyGen() {
 	persist.SaveToFile("PRIVATE_KEY", key)
 	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
 
+	var pubkey ecdsa.PublicKey
+	pubkey = privatekey.PublicKey
+
+	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(pubkey)
+	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509EncodedPub})
+	keyPub := b64.StdEncoding.EncodeToString(pemEncodedPub)
+	persist.SaveToFile("PUBLIC_KEY", keyPub)
+	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
+
 }

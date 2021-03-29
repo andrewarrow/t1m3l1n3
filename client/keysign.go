@@ -40,7 +40,7 @@ func KeySign() {
 	signature = append(signature, s.Bytes()...)
 	sEnc := b64.StdEncoding.EncodeToString(signature)
 
-	fmt.Printf("Signature : %s\n", sEnc)
+	fmt.Printf("Signature : %s\n\n", sEnc)
 
 	var pubkey ecdsa.PublicKey
 	pubkey = privatekey.PublicKey
