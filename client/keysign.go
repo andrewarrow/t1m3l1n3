@@ -14,7 +14,7 @@ import (
 	"math/big"
 )
 
-func KeySign(msg string) string {
+func KeySign(msg string) (string, string) {
 	var h hash.Hash
 	h = md5.New()
 	r := big.NewInt(0)
@@ -32,17 +32,9 @@ func KeySign(msg string) string {
 	r, s, err := ecdsa.Sign(rand.Reader, privatekey, signhash)
 	if err != nil {
 		fmt.Println(err)
-		return ""
+		return "", ""
 	}
 
-	signature := r.Bytes()
-	signature = append(signature, s.Bytes()...)
-	sEnc := b64.StdEncoding.EncodeToString(signature)
-
-	return sEnc
-
-	//var pubkey ecdsa.PublicKey
-	//pubkey = privatekey.PublicKey
-	//verifystatus := ecdsa.Verify(&pubkey, signhash, r, s)
-	//fmt.Println(verifystatus)
+	return b64.StdEncoding.EncodeToString(r.Bytes()),
+		b64.StdEncoding.EncodeToString(s.Bytes())
 }

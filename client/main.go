@@ -87,12 +87,14 @@ func main() {
 
 		for _, person := range people {
 			for _, word := range words {
-				network.PostNewTimeline(word, person, KeySign(word))
+				r, s := KeySign(word)
+				network.PostNewTimeline(word, person, r, s)
 				time.Sleep(time.Millisecond * 20)
 			}
 		}
 	} else if command == "post" {
 		cli.EnsureParamPass("text")
-		network.PostNewTimeline(cli.ArgMap["text"], cli.Username, KeySign(cli.ArgMap["text"]))
+		r, s := KeySign(cli.ArgMap["text"])
+		network.PostNewTimeline(cli.ArgMap["text"], cli.Username, r, s)
 	}
 }

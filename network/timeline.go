@@ -1,9 +1,17 @@
 package network
 
 import (
+	"crypto/ecdsa"
+	"crypto/md5"
+	"crypto/x509"
+	b64 "encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"hash"
+	"io"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"strconv"
 	"sync"
@@ -101,14 +109,32 @@ func NotifyTimeline(c *gin.Context) {
 	//t.AddToByKey()
 }
 
-func VerifySig(sig, from string) bool {
+func VerifySig(msg, r, s, from string) bool {
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	pubKey := universes[uids[uidIndex]].UsernameKeys[from]
 	if len(pubKey) == 0 {
 		return false
 	}
-	return true
+
+	blockPub, _ := pem.Decode(pubKey)
+	x509EncodedPub := blockPub.Bytes
+	genericPublicKey, _ := x509.ParsePKIXPublicKey(x509EncodedPub)
+	publicKey := genericPublicKey.(*ecdsa.PublicKey)
+
+	var h hash.Hash
+	h = md5.New()
+	io.WriteString(h, msg)
+	signhash := h.Sum(nil)
+	bigr := big.NewInt(0)
+	rDec, _ := b64.StdEncoding.DecodeString(r)
+	bigr = bigr.SetBytes(rDec)
+	bigs := big.NewInt(0)
+	sDec, _ := b64.StdEncoding.DecodeString(s)
+	bigs = bigs.SetBytes(sDec)
+	verifystatus := ecdsa.Verify(publicKey, signhash, bigr, bigs)
+
+	return verifystatus
 }
 
 func CreateTimeline(c *gin.Context) {
@@ -116,10 +142,10 @@ func CreateTimeline(c *gin.Context) {
 	t := Timeline{}
 	t.Text = m["text"]
 	t.From = m["username"]
-	sig := m["sig"]
-	fmt.Println("sig", sig)
+	r := m["r"]
+	s := m["s"]
 
-	if VerifySig(sig, t.From) == false {
+	if VerifySig(t.Text, r, s, t.From) == false {
 		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
 		return
 	}
@@ -177,8 +203,8 @@ func DisplayProfileTimelines(s string) {
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
-func PostNewTimeline(text, from, sig string) {
-	m := map[string]string{"text": text, "username": from, "sig": sig}
+func PostNewTimeline(text, from, r, s string) {
+	m := map[string]string{"text": text, "username": from, "r": r, "s": s}
 	asBytes, _ := json.Marshal(m)
 	DoPost("timelines", asBytes)
 }
