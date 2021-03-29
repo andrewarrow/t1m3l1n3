@@ -10,7 +10,7 @@ Now find your row and remove a pawn from column 7 and 14.
 You are not following user 7 and user 14 anymore.
 
 When they go to post something, a pointer to their latest message
-will be placed in each user's inbox; if they user follows them.
+will be placed in each user's inbox; if the user follows them.
 
 This is what Following []unit64 is for and it means:
 
@@ -61,4 +61,6 @@ public CLT server to the main list.
 When you run the client it will connect to the main server to get a copy
 of the main list. Then it will pick a random server from that list to query
 for your timeline ls command.
+
+# Sample Use
 
