@@ -41,4 +41,9 @@ func KeySign() {
 	sEnc := b64.StdEncoding.EncodeToString(signature)
 
 	fmt.Printf("Signature : %s\n", sEnc)
+
+	var pubkey ecdsa.PublicKey
+	pubkey = privatekey.PublicKey
+	verifystatus := ecdsa.Verify(&pubkey, signhash, r, s)
+	fmt.Println(verifystatus)
 }
