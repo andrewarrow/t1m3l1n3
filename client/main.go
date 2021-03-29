@@ -12,14 +12,15 @@ import (
 
 func PrintHelp() {
 	fmt.Println("")
-	fmt.Println("  clt ls        # List recent timelines")
-	fmt.Println("  clt profile   # List recent timelines")
-	fmt.Println("  clt post      # Post new timeline with --text=hi")
-	fmt.Println("  clt auth      # Set your username --name=")
-	fmt.Println("  clt servers   # List the main list")
-	fmt.Println("  clt simulate  # Simulate traffic")
-	fmt.Println("  clt toggle    # Toggle follow")
-	fmt.Println("  clt universe  # Display universe_id")
+	fmt.Println("  client ls        # List recent timelines")
+	fmt.Println("  client profile   # List recent timelines")
+	fmt.Println("  client post      # Post new timeline with --text=hi")
+	fmt.Println("  client keygen    # Generate public/private keys")
+	fmt.Println("  client auth      # Set your username --name=")
+	fmt.Println("  client servers   # List the main list")
+	fmt.Println("  client simulate  # Simulate traffic")
+	fmt.Println("  client toggle    # Toggle follow --name=")
+	fmt.Println("  client universe  # Display universe json")
 	fmt.Println("")
 }
 
@@ -46,6 +47,8 @@ func main() {
 		cli.EnsureParamPass("name")
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
 		fmt.Println(s)
+	} else if command == "keygen" {
+		KeyGen()
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
