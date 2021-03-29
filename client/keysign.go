@@ -12,16 +12,15 @@ import (
 	"hash"
 	"io"
 	"math/big"
-	"os"
 )
 
-func KeySign() {
+func KeySign(msg string) string {
 	var h hash.Hash
 	h = md5.New()
 	r := big.NewInt(0)
 	s := big.NewInt(0)
 
-	io.WriteString(h, "This is a message to be signed!")
+	io.WriteString(h, msg)
 	signhash := h.Sum(nil)
 
 	data := persist.ReadFromFile("PRIVATE_KEY")
@@ -33,17 +32,17 @@ func KeySign() {
 	r, s, err := ecdsa.Sign(rand.Reader, privatekey, signhash)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return ""
 	}
 
 	signature := r.Bytes()
 	signature = append(signature, s.Bytes()...)
 	sEnc := b64.StdEncoding.EncodeToString(signature)
 
-	fmt.Printf("Signature : %s\n\n", sEnc)
+	return sEnc
 
-	var pubkey ecdsa.PublicKey
-	pubkey = privatekey.PublicKey
-	verifystatus := ecdsa.Verify(&pubkey, signhash, r, s)
-	fmt.Println(verifystatus)
+	//var pubkey ecdsa.PublicKey
+	//pubkey = privatekey.PublicKey
+	//verifystatus := ecdsa.Verify(&pubkey, signhash, r, s)
+	//fmt.Println(verifystatus)
 }

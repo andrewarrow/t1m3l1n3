@@ -51,7 +51,7 @@ func main() {
 	} else if command == "keygen" {
 		KeyGen()
 	} else if command == "sign" {
-		KeySign()
+		KeySign("test")
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
@@ -72,15 +72,16 @@ func main() {
 			"logan4", "owen4", "liam4", "sophia4", "santiago4", "joe4", "dan4", "mark4", "charles4", "kevin4",
 			"logan5", "owen5", "liam5", "sophia5", "santiago5", "joe5", "dan5", "mark5", "charles5", "kevin5",
 			"logan6", "owen6", "liam6", "sophia6"}
-		words := []string{"hi there", "ok then"}
+		words := []string{"hi", "there"}
 
 		for _, person := range people {
 			for _, word := range words {
-				network.PostNewTimeline(word, person)
+				network.PostNewTimeline(word, person, KeySign(word))
 				time.Sleep(time.Millisecond * 20)
 			}
 		}
 	} else if command == "post" {
-		network.PostNewTimeline(cli.ArgMap["text"], cli.Username)
+		cli.EnsureParamPass("text")
+		network.PostNewTimeline(cli.ArgMap["text"], cli.Username, KeySign(cli.ArgMap["text"]))
 	}
 }

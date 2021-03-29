@@ -12,6 +12,29 @@ import (
 	"os"
 )
 
+/*
+1. user makes keys on local hard drive
+2. user proove he's "username" on twitter by posting signed message
+3. user enter url of tweet
+4. now we know only the person with this private key on his hard drive could have tweeted that.
+5. the datetime of the tweet says who was 1st to do this
+
+
+1. Upload your pub_key + username to main node
+
+Node 1
+
+"username" posts hi
+
+   1. username is avail
+	    assume its ok
+	 2. username is in use
+
+
+Node 2
+
+*/
+
 func KeyGen() {
 	pubkeyCurve := elliptic.P256()
 

@@ -9,22 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ShowUniverse(c *gin.Context) {
-	items := []map[string]interface{}{}
-	for _, id := range uids {
-		stats := universes[id].MakeStats()
-		items = append(items, stats)
-	}
-	c.JSON(200, gin.H{"items": items})
-}
-
 type Universe struct {
-	Following []uint64
-	Inboxes   map[byte][]*Timeline
-	Usernames map[string]byte
-	Profile   map[byte][]*Timeline
-	UserCount byte
-	Id        string
+	Following        []uint64
+	Inboxes          map[byte][]*Timeline
+	Usernames        map[string]byte
+	UsernameKeys     map[string][]byte
+	UsernameVerified map[string]string
+	Profile          map[byte][]*Timeline
+	UserCount        byte
+	Id               string
 }
 
 func MakeUniverses() []string {
@@ -44,6 +37,15 @@ func MakeUniversesWithIds(ids []string) []string {
 	}
 	return uids
 }
+func ShowUniverse(c *gin.Context) {
+	items := []map[string]interface{}{}
+	for _, id := range uids {
+		stats := universes[id].MakeStats()
+		items = append(items, stats)
+	}
+	c.JSON(200, gin.H{"items": items})
+}
+
 func (u *Universe) MakeStats() map[string]interface{} {
 	m := map[string]interface{}{}
 

@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -64,18 +63,6 @@ func mapJsonBody(c *gin.Context) map[string]string {
 	}
 	return m
 }
-func mapBody(c *gin.Context) map[string]string {
-	defer c.Request.Body.Close()
-	body, _ := ioutil.ReadAll(c.Request.Body)
-	m := map[string]string{}
-	for _, line := range strings.Split(string(body), "\n") {
-		k, v := mapIt(strings.Split(line, "="))
-		if k != "" {
-			m[k] = v
-		}
-	}
-	return m
-}
 
 type TimelineProfileWrapper struct {
 	Profile []Timeline `json:"profile"`
@@ -115,10 +102,12 @@ func NotifyTimeline(c *gin.Context) {
 }
 
 func CreateTimeline(c *gin.Context) {
-	m := mapBody(c)
+	m := mapJsonBody(c)
 	t := Timeline{}
 	t.Text = m["text"]
 	t.From = m["username"]
+	sig := m["sig"]
+	fmt.Println("sig", sig)
 	t.PostedAt = time.Now().Unix()
 	t.Origin = globalInOut.Name
 
@@ -172,10 +161,8 @@ func DisplayProfileTimelines(s string) {
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
-func PostNewTimeline(text, from string) {
-	s := `text=%s
-username=%s
-`
-	payload := fmt.Sprintf(s, text, from)
-	DoPost("timelines", []byte(payload))
+func PostNewTimeline(text, from, sig string) {
+	m := map[string]string{"text": text, "username": from, "sig": sig}
+	asBytes, _ := json.Marshal(m)
+	DoPost("timelines", asBytes)
 }

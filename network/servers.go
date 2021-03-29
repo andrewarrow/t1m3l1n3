@@ -19,7 +19,7 @@ func ShowServers(c *gin.Context) {
 	ServerLock.Unlock()
 }
 func AddServer(c *gin.Context) {
-	m := mapBody(c)
+	m := mapJsonBody(c)
 	name := fmt.Sprintf("%s:%s", m["host"], m["port"])
 	//in := ""
 	//out := ""
