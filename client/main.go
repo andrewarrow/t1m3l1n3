@@ -16,6 +16,7 @@ func PrintHelp() {
 	fmt.Println("  client profile   # List recent timelines")
 	fmt.Println("  client post      # Post new timeline with --text=hi")
 	fmt.Println("  client keygen    # Generate public/private keys")
+	fmt.Println("  client sign      # Sign a message")
 	fmt.Println("  client auth      # Set your username --name=")
 	fmt.Println("  client servers   # List the main list")
 	fmt.Println("  client simulate  # Simulate traffic")
@@ -49,6 +50,8 @@ func main() {
 		fmt.Println(s)
 	} else if command == "keygen" {
 		KeyGen()
+	} else if command == "sign" {
+		KeySign()
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)

@@ -5,6 +5,9 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
+	b64 "encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"os"
 )
@@ -20,7 +23,11 @@ func KeyGen() {
 		os.Exit(1)
 	}
 
-	key := fmt.Sprintf("%x\n%x\n%x\n", privatekey.X, privatekey.Y, privatekey.D)
+	x509Encoded, _ := x509.MarshalECPrivateKey(privatekey)
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded})
+
+	key := b64.StdEncoding.EncodeToString(pemEncoded)
+
 	location := persist.UserHomeDir()
 	persist.SaveToFile("PRIVATE_KEY", key)
 	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
