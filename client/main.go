@@ -67,7 +67,14 @@ func main() {
 		s := network.DoGet("servers")
 		fmt.Println(s)
 	} else if command == "auth" {
-		persist.SaveToFile("USERNAME", cli.ArgMap["name"])
+		cli.EnsureParamPass("name")
+		pub := persist.ReadFromFile("PUBLIC_KEY")
+		if network.PostNewAuth(cli.ArgMap["name"], pub) {
+			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
+			fmt.Println("Ok you are now:", cli.ArgMap["name"])
+		} else {
+			fmt.Println("error")
+		}
 	} else if command == "simulate" {
 		people := []string{"bob", "alice", "candy", "mike", "dave", "chris", "pam", "abigail", "emma", "luna",
 			"logan", "owen", "liam", "sophia", "santiago", "joe", "dan", "mark", "charles", "kevin",

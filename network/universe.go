@@ -3,6 +3,7 @@ package network
 import (
 	"clt/cli"
 	"clt/persist"
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -49,8 +50,11 @@ func MakeUniversesWithIds(ids []string) []string {
 			for k, v := range other {
 				u.Usernames[k] = byte(v.(float64))
 			}
-			//u.UsernameKeys = m["username_keys"].(map[string][]byte)
-			fmt.Println("u", u)
+			other = m["username_keys"].(map[string]interface{})
+			for k, v := range other {
+				sDec, _ := b64.StdEncoding.DecodeString(v.(string))
+				u.UsernameKeys[k] = sDec
+			}
 		}
 		uids = append(uids, u.Id)
 		universes[u.Id] = u
@@ -146,6 +150,7 @@ func NewUniverse() *Universe {
 	u.Following = []uint64{}
 
 	u.Usernames = map[string]byte{}
+	u.UsernameKeys = map[string][]byte{}
 	u.UsernameToIndex("sysop")
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}

@@ -2,7 +2,6 @@ package network
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +22,7 @@ func Start(c chan bool, port, host string) {
 	r.POST("/timelines/notify", NotifyTimeline)
 	r.POST("/follow/:username", ToggleFollowPost)
 	r.GET("/universe", ShowUniverse)
+	r.POST("/auth", CreateUserKey)
 	if host == "main" {
 		r.GET("/servers", ShowServers)
 		r.POST("/servers", AddServer)
@@ -30,14 +30,7 @@ func Start(c chan bool, port, host string) {
 		globalInOut.Flavor = "main"
 		globalInOut.Name = "localhost:8080"
 	} else {
-		s := `host=%s
-port=%s
-`
-		payload := fmt.Sprintf(s, host, port)
-		os.Setenv("CLT_HOST", "")
-		jsonString := DoPost("servers", []byte(payload))
-		globalInOut = ParseInOut(jsonString)
-		globalInOut.Flavor = "other"
+		//TODO
 	}
 	r.Run(":" + port)
 }
