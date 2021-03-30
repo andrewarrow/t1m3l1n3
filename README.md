@@ -101,6 +101,9 @@ talk and follow each other you are part of this decentralized social media
 system. The whole point is if many individuals pay the hosting costs, there is 
 no one big company paying ALL the hosting and therefore making ALL the rules.
 
+But 64 people isn't very many people. So you need to band together with another 64
+and another 64 and on and on.
+
 
 
 
