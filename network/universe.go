@@ -23,8 +23,9 @@ type Universe struct {
 	Id           string
 }
 
-func MakeUniverses() []string {
-	for i := 0; i < size; i++ {
+func MakeUniverses(s string) []string {
+	max, _ := strconv.Atoi(s)
+	for i := 0; i < max; i++ {
 		u := NewUniverse()
 		uids = append(uids, u.Id)
 		universes[u.Id] = u

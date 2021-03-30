@@ -9,6 +9,7 @@ import (
 var uidIndex byte = 0
 var uids []string = []string{}
 var universes map[string]*Universe = map[string]*Universe{}
+var maxUniverses byte
 var globalInOut *InOut
 
 func Start(c chan bool, port, host string) {
