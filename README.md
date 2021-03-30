@@ -49,6 +49,59 @@ the N major other chains. And for free speach and who gets to set
 the rules? It's the person with the $5 credit card bill's decision.
 There will be certain community standards some chains allow.
 
+# So anyone can take my username for themselves in a new node?
+
+Yes, but they would be all alone, claiming to be you in a node that no
+one else agrees is valid.
+
+# What if a bunch of people agree it's valid?
+
+Then yes, there is competition for your username. The same way the username
+"goodname" on twitter is in competition for "goodname" on another social
+media site.
+
+# Which one wins?
+
+They both co-exist but you vote with your attention and your wallet. You
+can choose to accept the CLT chain where most of your friends are. You can
+chose to spend your $5 a month node on the chain you like. You can even get
+two nodes and spend $10 a month or as much as you want.
+
+# So how many chains are there?
+
+A lot. Most of them small. Over time only a few will dominate the scene as
+"the big chains" and you can probably guess there will be one that leans left
+politically and one that leans right. Is there a center one? Sure. Is there more
+than one center one? Sure. When you see something that offends you, define your
+own guidelines and break off into a new chain.
+
+# What about illegal content or hate speach?
+
+Read your contract with digitalocean or whoever you are renting your $5 a month
+server from. I woudln't want illegal content on my server! When you are in a major
+chain, certain messages are flagged for violations and removed. Can everyone agree
+on which messages MUST be removed? No. Can a bunch of people agree on some basic
+guidelines? Yes.
+
+# Can you detach your name/public key from one node and move to another?
+
+Yes, when someone installs the CLT client for the first time, they are given 
+the default chain. But you can configure your client to speak to another chain.
+Think of some very popular blogger like Matt Taibbi. You know where the REAL
+Matt Taibbi is blogging from right? At the time of writing this (March 2021) 
+it's substack. But if he were to suddenly abandon that account and appear 
+somewhere else, you'd follow that new Matt Taibbi account on some other chain.
+
+# Where does my $5/mo go, to the universe or node creator?
+
+It goes to digitalocean or aws or any cloud provider you want to use to rent a
+server that has CPU, RAM, Internet Access, and hard drive space. With one node
+you are the sysop for 64 people. You are paying the bill for these 64 people to
+talk and follow each other you are part of this decentralized social media
+system. The whole point is if many individuals pay the hosting costs, there is 
+no one big company paying ALL the hosting and therefore making ALL the rules.
+
+
 
 
 
