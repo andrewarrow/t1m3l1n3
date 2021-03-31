@@ -30,10 +30,8 @@ func KeyGen() {
 	x509Encoded, _ := x509.MarshalECPrivateKey(privatekey)
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded})
 
-	key := b64.StdEncoding.EncodeToString(pemEncoded)
-
 	location := persist.UserHomeDir()
-	persist.SaveToFile("PRIVATE_KEY", key)
+	persist.SaveToFile("PRIVATE_KEY", string(pemEncoded))
 	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
 
 	var pubkey ecdsa.PublicKey
@@ -41,10 +39,7 @@ func KeyGen() {
 
 	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(pubkey)
 	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509EncodedPub})
-	keyPub := b64.StdEncoding.EncodeToString(pemEncodedPub)
-	begin := "-----BEGIN PUBLIC KEY-----"
-	end := "-----END PUBLIC KEY-----"
-	persist.SaveToFile("PUBLIC_KEY", fmt.Sprintf("%s\n%s\n%s", begin, keyPub, end))
+	persist.SaveToFile("PUBLIC_KEY", string(pemEncodedPub))
 	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
 
 	fmt.Printf("\n\n")
@@ -53,8 +48,8 @@ func KeyGen() {
 	fmt.Printf("THERE IS NO FORGET PASSWORD LINK THIS IS IT \n")
 	fmt.Printf("-------------------\n")
 	fmt.Printf("\n\n")
-	fmt.Printf("%s\n", key)
-	fmt.Printf("%s\n", keyPub)
+	fmt.Printf("%s\n", string(pemEncoded))
+	fmt.Printf("%s\n", string(pemEncodedPub))
 	fmt.Printf("\n\n")
 
 	DoTestSignAndVerify()
