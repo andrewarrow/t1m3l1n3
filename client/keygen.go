@@ -4,11 +4,15 @@ import (
 	"clt/persist"
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"crypto/md5"
 	"crypto/rand"
 	"crypto/x509"
 	b64 "encoding/base64"
 	"encoding/pem"
 	"fmt"
+	"hash"
+	"io"
+	"math/big"
 	"os"
 )
 
@@ -51,4 +55,41 @@ func KeyGen() {
 	fmt.Printf("%s\n", keyPub)
 	fmt.Printf("\n\n")
 
+	DoTestSignAndVerify()
+}
+
+func DoTestSignAndVerify() {
+	msg := "hi"
+	pub := persist.ReadFromFile("PUBLIC_KEY")
+	fmt.Println(pub)
+	sDec, _ := b64.StdEncoding.DecodeString(pub)
+	fmt.Println(sDec)
+
+	fmt.Println(pub)
+	blockPub, e := pem.Decode(sDec)
+	fmt.Println(e)
+	fmt.Println(blockPub)
+	x509EncodedPub := blockPub.Bytes
+	fmt.Println(blockPub.Bytes)
+	genericPublicKey, ee := x509.ParsePKIXPublicKey(x509EncodedPub)
+	fmt.Println(genericPublicKey)
+	fmt.Println(ee)
+	publicKey := genericPublicKey.(*ecdsa.PublicKey)
+
+	r, s := KeySign(msg)
+	fmt.Println(r)
+	fmt.Println(s)
+
+	var h hash.Hash
+	h = md5.New()
+	io.WriteString(h, msg)
+	signhash := h.Sum(nil)
+	bigr := big.NewInt(0)
+	rDec, _ := b64.StdEncoding.DecodeString(r)
+	bigr = bigr.SetBytes(rDec)
+	bigs := big.NewInt(0)
+	sDec2, _ := b64.StdEncoding.DecodeString(s)
+	bigs = bigs.SetBytes(sDec2)
+	verifystatus := ecdsa.Verify(publicKey, signhash, bigr, bigs)
+	fmt.Println(verifystatus)
 }

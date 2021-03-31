@@ -53,7 +53,10 @@ func main() {
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
 		fmt.Println(s)
 	} else if command == "keygen" {
+		cli.EnsureParamPass("overwrite")
 		KeyGen()
+	} else if command == "verify" {
+		DoTestSignAndVerify()
 	} else if command == "sign" {
 		KeySign("test")
 	} else if command == "ls" {
