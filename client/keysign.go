@@ -7,6 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	b64 "encoding/base64"
 	"encoding/pem"
 	"fmt"
 )
@@ -26,5 +27,5 @@ func KeySign(msg string) string {
 		return ""
 	}
 
-	return string(signature)
+	return b64.StdEncoding.EncodeToString(signature)
 }

@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	b64 "encoding/base64"
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
@@ -106,7 +107,7 @@ func NotifyTimeline(c *gin.Context) {
 	//t.AddToByKey()
 }
 
-func VerifySig(msg, s, from string) bool {
+func VerifySig(msg, from string, s []byte) bool {
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	pubKey := universes[uids[uidIndex]].UsernameKeys[from]
@@ -121,7 +122,7 @@ func VerifySig(msg, s, from string) bool {
 	msgHash.Write([]byte(msg))
 	msgHashSum := msgHash.Sum(nil)
 
-	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, []byte(s), nil)
+	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, s, nil)
 	fmt.Println(valid)
 	return valid == nil
 }
@@ -132,8 +133,9 @@ func CreateTimeline(c *gin.Context) {
 	t.Text = m["text"]
 	t.From = m["username"]
 	s := m["s"]
+	sDec, _ := b64.StdEncoding.DecodeString(s)
 
-	if VerifySig(t.Text, s, t.From) == false {
+	if VerifySig(t.Text, t.From, sDec) == false {
 		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
 		return
 	}
