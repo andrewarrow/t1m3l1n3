@@ -33,7 +33,7 @@ func MakeUniverses(s string) []string {
 	return uids
 }
 func MakeUniversesWithIds(ids []string) []string {
-	for i := 0; i < size; i++ {
+	for i := 0; i < len(ids); i++ {
 		u := NewUniverse()
 		u.Id = ids[i]
 		jsonString := persist.ReadFromFile(u.Id)

@@ -42,7 +42,9 @@ func KeyGen() {
 	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(pubkey)
 	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509EncodedPub})
 	keyPub := b64.StdEncoding.EncodeToString(pemEncodedPub)
-	persist.SaveToFile("PUBLIC_KEY", keyPub)
+	begin := "-----BEGIN PUBLIC KEY-----"
+	end := "-----END PUBLIC KEY-----"
+	persist.SaveToFile("PUBLIC_KEY", fmt.Sprintf("%s\n%s\n%s", begin, keyPub, end))
 	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
 
 	fmt.Printf("\n\n")
@@ -62,15 +64,11 @@ func DoTestSignAndVerify() {
 	msg := "hi"
 	pub := persist.ReadFromFile("PUBLIC_KEY")
 	fmt.Println(pub)
-	sDec, _ := b64.StdEncoding.DecodeString(pub)
-	fmt.Println(sDec)
-
-	fmt.Println(pub)
-	blockPub, e := pem.Decode(sDec)
+	blockPub, e := pem.Decode([]byte(pub))
 	fmt.Println(e)
 	fmt.Println(blockPub)
 	x509EncodedPub := blockPub.Bytes
-	fmt.Println(blockPub.Bytes)
+	//fmt.Println(blockPub.Bytes)
 	genericPublicKey, ee := x509.ParsePKIXPublicKey(x509EncodedPub)
 	fmt.Println(genericPublicKey)
 	fmt.Println(ee)
