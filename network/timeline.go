@@ -1,17 +1,9 @@
 package network
 
 import (
-	"crypto/ecdsa"
-	"crypto/md5"
-	"crypto/x509"
-	b64 "encoding/base64"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
-	"hash"
-	"io"
 	"io/ioutil"
-	"math/big"
 	"os"
 	"strconv"
 	"sync"
@@ -109,7 +101,7 @@ func NotifyTimeline(c *gin.Context) {
 	//t.AddToByKey()
 }
 
-func VerifySig(msg, r, s, from string) bool {
+func VerifySig(msg, s, from string) bool {
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	pubKey := universes[uids[uidIndex]].UsernameKeys[from]
@@ -117,28 +109,7 @@ func VerifySig(msg, r, s, from string) bool {
 		return false
 	}
 
-	fmt.Println(pubKey)
-	blockPub, e := pem.Decode(pubKey)
-	fmt.Println(blockPub, e)
-	x509EncodedPub := blockPub.Bytes
-	fmt.Println(blockPub.Bytes)
-	genericPublicKey, ee := x509.ParsePKIXPublicKey(x509EncodedPub)
-	fmt.Println(genericPublicKey, ee)
-	publicKey := genericPublicKey.(*ecdsa.PublicKey)
-
-	var h hash.Hash
-	h = md5.New()
-	io.WriteString(h, msg)
-	signhash := h.Sum(nil)
-	bigr := big.NewInt(0)
-	rDec, _ := b64.StdEncoding.DecodeString(r)
-	bigr = bigr.SetBytes(rDec)
-	bigs := big.NewInt(0)
-	sDec, _ := b64.StdEncoding.DecodeString(s)
-	bigs = bigs.SetBytes(sDec)
-	verifystatus := ecdsa.Verify(publicKey, signhash, bigr, bigs)
-
-	return verifystatus
+	return true
 }
 
 func CreateTimeline(c *gin.Context) {
@@ -146,10 +117,9 @@ func CreateTimeline(c *gin.Context) {
 	t := Timeline{}
 	t.Text = m["text"]
 	t.From = m["username"]
-	r := m["r"]
 	s := m["s"]
 
-	if VerifySig(t.Text, r, s, t.From) == false {
+	if VerifySig(t.Text, s, t.From) == false {
 		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
 		return
 	}
@@ -207,8 +177,8 @@ func DisplayProfileTimelines(s string) {
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
-func PostNewTimeline(text, from, r, s string) {
-	m := map[string]string{"text": text, "username": from, "r": r, "s": s}
+func PostNewTimeline(text, from, s string) {
+	m := map[string]string{"text": text, "username": from, "s": s}
 	asBytes, _ := json.Marshal(m)
 	DoPost("timelines", asBytes)
 }

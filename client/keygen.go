@@ -2,43 +2,35 @@ package main
 
 import (
 	"clt/persist"
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/md5"
+	"crypto"
 	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
-	b64 "encoding/base64"
 	"encoding/pem"
 	"fmt"
-	"hash"
-	"io"
-	"math/big"
 	"os"
 )
 
 func KeyGen() {
-	pubkeyCurve := elliptic.P256()
-
-	privatekey := new(ecdsa.PrivateKey)
-	privatekey, err := ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	x509Encoded, _ := x509.MarshalECPrivateKey(privatekey)
-	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded})
+	var privateKeyBytes []byte = x509.MarshalPKCS1PrivateKey(privateKey)
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: privateKeyBytes})
 
 	location := persist.UserHomeDir()
 	persist.SaveToFile("PRIVATE_KEY", string(pemEncoded))
 	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
 
-	var pubkey ecdsa.PublicKey
-	pubkey = privatekey.PublicKey
+	pubkey := &privateKey.PublicKey
 
 	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(pubkey)
-	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509EncodedPub})
+	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "RSA PUBLIC KEY", Bytes: x509EncodedPub})
 	persist.SaveToFile("PUBLIC_KEY", string(pemEncodedPub))
 	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
 
@@ -59,30 +51,18 @@ func DoTestSignAndVerify() {
 	msg := "hi"
 	pub := persist.ReadFromFile("PUBLIC_KEY")
 	fmt.Println(pub)
-	blockPub, e := pem.Decode([]byte(pub))
-	fmt.Println(e)
-	fmt.Println(blockPub)
-	x509EncodedPub := blockPub.Bytes
-	//fmt.Println(blockPub.Bytes)
-	genericPublicKey, ee := x509.ParsePKIXPublicKey(x509EncodedPub)
-	fmt.Println(genericPublicKey)
-	fmt.Println(ee)
-	publicKey := genericPublicKey.(*ecdsa.PublicKey)
+	blockPub, _ := pem.Decode([]byte(pub))
+	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
+	publicKey := genericPublicKey.(*rsa.PublicKey)
 
-	r, s := KeySign(msg)
-	fmt.Println(r)
+	s := KeySign(msg)
 	fmt.Println(s)
 
-	var h hash.Hash
-	h = md5.New()
-	io.WriteString(h, msg)
-	signhash := h.Sum(nil)
-	bigr := big.NewInt(0)
-	rDec, _ := b64.StdEncoding.DecodeString(r)
-	bigr = bigr.SetBytes(rDec)
-	bigs := big.NewInt(0)
-	sDec2, _ := b64.StdEncoding.DecodeString(s)
-	bigs = bigs.SetBytes(sDec2)
-	verifystatus := ecdsa.Verify(publicKey, signhash, bigr, bigs)
-	fmt.Println(verifystatus)
+	msgHash := sha256.New()
+	msgHash.Write([]byte(msg))
+	msgHashSum := msgHash.Sum(nil)
+
+	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, []byte(s), nil)
+	fmt.Println(valid)
+
 }
