@@ -1,7 +1,12 @@
 package network
 
 import (
+	"crypto"
+	"crypto/rsa"
+	"crypto/sha256"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -108,8 +113,17 @@ func VerifySig(msg, s, from string) bool {
 	if len(pubKey) == 0 {
 		return false
 	}
+	blockPub, _ := pem.Decode([]byte(pubKey))
+	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
+	publicKey := genericPublicKey.(*rsa.PublicKey)
 
-	return true
+	msgHash := sha256.New()
+	msgHash.Write([]byte(msg))
+	msgHashSum := msgHash.Sum(nil)
+
+	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, []byte(s), nil)
+	fmt.Println(valid)
+	return valid == nil
 }
 
 func CreateTimeline(c *gin.Context) {
