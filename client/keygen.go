@@ -56,7 +56,6 @@ func DoTestSignAndVerify() {
 	publicKey := genericPublicKey.(*rsa.PublicKey)
 
 	s := KeySign(msg)
-	fmt.Println(s)
 
 	msgHash := sha256.New()
 	msgHash.Write([]byte(msg))
