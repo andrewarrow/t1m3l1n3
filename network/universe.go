@@ -163,6 +163,7 @@ func NewUniverse() *Universe {
 
 	u.Usernames = map[string]byte{}
 	u.UsernameKeys = map[string][]byte{}
+	u.UserCreatedAt = map[string]int64{}
 	u.UsernameToIndex("sysop")
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}

@@ -113,7 +113,7 @@ func VerifySig(msg, s, from string) bool {
 	if len(pubKey) == 0 {
 		return false
 	}
-	blockPub, _ := pem.Decode([]byte(pubKey))
+	blockPub, _ := pem.Decode(pubKey)
 	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
 	publicKey := genericPublicKey.(*rsa.PublicKey)
 
