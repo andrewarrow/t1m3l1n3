@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,7 @@ func CreateUserKey(c *gin.Context) {
 	defer UniverseLock.Unlock()
 	if len(universes[uids[uidIndex]].UsernameKeys[name]) == 0 {
 		universes[uids[uidIndex]].UsernameKeys[name] = []byte(pub)
+		universes[uids[uidIndex]].UserCreatedAt[name] = time.Now().Unix()
 		c.JSON(200, gin.H{"ok": true})
 	} else {
 		c.JSON(422, gin.H{"ok": false})

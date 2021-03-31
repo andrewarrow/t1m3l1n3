@@ -14,13 +14,14 @@ import (
 )
 
 type Universe struct {
-	Following    []uint64
-	Inboxes      map[byte][]*Timeline
-	Usernames    map[string]byte
-	UsernameKeys map[string][]byte
-	Profile      map[byte][]*Timeline
-	UserCount    byte
-	Id           string
+	Following     []uint64
+	Inboxes       map[byte][]*Timeline
+	Usernames     map[string]byte
+	UserCreatedAt map[string]int64
+	UsernameKeys  map[string][]byte
+	Profile       map[byte][]*Timeline
+	UserCount     byte
+	Id            string
 }
 
 func MakeUniverses(s string) []string {
@@ -50,6 +51,10 @@ func MakeUniversesWithIds(ids []string) []string {
 			other := m["usernames"].(map[string]interface{})
 			for k, v := range other {
 				u.Usernames[k] = byte(v.(float64))
+			}
+			other = m["user_created_at"].(map[string]interface{})
+			for k, v := range other {
+				u.UserCreatedAt[k] = int64(v.(float64))
 			}
 			other = m["username_keys"].(map[string]interface{})
 			for k, v := range other {
@@ -88,6 +93,7 @@ func (u *Universe) Marshal() map[string]interface{} {
 	m["following"] = FollowingPayload
 	m["usernames"] = u.Usernames
 	m["username_keys"] = UsernameKeysPayload
+	m["user_created_at"] = u.UserCreatedAt
 
 	return m
 }
