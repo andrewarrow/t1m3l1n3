@@ -65,6 +65,7 @@ func main() {
 			i := byte(info["index"].(float64))
 			persist.SaveToFile("SERVER", s)
 			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
+			cli.ReadInGlobalVars()
 			fmt.Println("Ok", s, i)
 		} else {
 			fmt.Println("Sorry I have no idea.")
@@ -91,6 +92,10 @@ func main() {
 		s := network.DoGet("servers")
 		fmt.Println(s)
 	} else if command == "auth" {
+		if cli.ArgMap["clear"] == "true" {
+			persist.RemoveList(persist.AllFiles())
+			return
+		}
 		cli.EnsureParamPass("name")
 		pub := persist.ReadFromFile("PUBLIC_KEY")
 		auth := network.PostNewAuth(cli.ArgMap["name"], pub)
@@ -100,6 +105,7 @@ func main() {
 			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 			persist.SaveToFile("SERVER", s)
 			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
+			cli.ReadInGlobalVars()
 			fmt.Println("Ok you are now:", cli.ArgMap["name"])
 		} else {
 			fmt.Println("This username already taken!")
@@ -115,9 +121,10 @@ func main() {
 		words := []string{"hi", "there"}
 
 		for _, person := range people {
+			fmt.Println(person)
 			for _, word := range words {
 				s := KeySign(word)
-				network.PostNewTimeline(word, person, s)
+				network.PostNewTimeline(word, s)
 				time.Sleep(time.Millisecond * 20)
 			}
 		}

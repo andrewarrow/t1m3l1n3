@@ -21,17 +21,16 @@ import (
 )
 
 func ShowInbox(c *gin.Context) {
+	i := TlzIndex(c)
 	from := c.Request.Header["Username"]
-	fmt.Println(from)
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
-	fromIndex := universes[uids[uidIndex]].UsernameToIndex(from[0]) - 1
+	fromIndex := universes[uids[i]].UsernameToIndex(from[0]) - 1
 	if fromIndex < 255 {
-		c.JSON(200, gin.H{"inbox": universes[uids[uidIndex]].Inboxes[fromIndex]})
+		c.JSON(200, gin.H{"inbox": universes[uids[i]].Inboxes[fromIndex]})
 		return
 	}
-	fromIndex = universes[uids[uidIndex+1]].UsernameToIndex(from[0]) - 1
-	c.JSON(200, gin.H{"inbox": universes[uids[uidIndex+1]].Inboxes[fromIndex]})
+	c.JSON(200, gin.H{"inbox": "well..."})
 }
 
 func ToggleFollowPost(c *gin.Context) {
@@ -44,7 +43,7 @@ func ToggleFollowPost(c *gin.Context) {
 }
 
 func TlzIndex(c *gin.Context) byte {
-	index := c.Request.Header["TLZ-Index"]
+	index := c.Request.Header["Tlz-Index"]
 	i, _ := strconv.Atoi(index[0])
 	return byte(i)
 }

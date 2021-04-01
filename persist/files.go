@@ -13,6 +13,15 @@ func Init() {
 	os.Mkdir(home+"/"+DIRNAME, 0755)
 }
 
+func AllFiles() []string {
+	items := []string{}
+	home := UserHomeDir()
+	files, _ := ioutil.ReadDir(home + "/" + DIRNAME + "/")
+	for _, file := range files {
+		items = append(items, file.Name())
+	}
+	return items
+}
 func RemoveList(files []string) {
 	home := UserHomeDir()
 	for _, f := range files {
