@@ -25,6 +25,7 @@ func PrintHelp() {
 	fmt.Println("  client idplease  # tell me what server/node i'm connected to")
 	fmt.Println("  client taken     # taken usernames")
 	fmt.Println("  client suggest   # suggest a new universe with less users")
+	fmt.Println("  client change    # --server=x --index=y")
 	fmt.Println("")
 }
 
@@ -54,6 +55,10 @@ func main() {
 	} else if command == "taken" {
 		s := network.DoGet(fmt.Sprintf("taken"))
 		fmt.Println(s)
+	} else if command == "change" {
+		cli.EnsureParamPass("server", "index")
+		persist.SaveToFile("SERVER", cli.ArgMap["server"])
+		persist.SaveToFile("INDEX", cli.ArgMap["index"])
 	} else if command == "toggle" {
 		cli.EnsureParamPass("name")
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
@@ -65,7 +70,6 @@ func main() {
 			i := byte(info["index"].(float64))
 			persist.SaveToFile("SERVER", s)
 			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
-			cli.ReadInGlobalVars()
 			fmt.Println("Ok", s, i)
 		} else {
 			fmt.Println("Sorry I have no idea.")
@@ -105,7 +109,6 @@ func main() {
 			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 			persist.SaveToFile("SERVER", s)
 			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
-			cli.ReadInGlobalVars()
 			fmt.Println("Ok you are now:", cli.ArgMap["name"])
 		} else {
 			fmt.Println("This username already taken!")
