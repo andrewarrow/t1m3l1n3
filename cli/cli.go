@@ -5,11 +5,15 @@ import (
 	"crypto/rand"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 var ArgMap = map[string]string{}
 var Username string
+var Server string
+var IndexString string
+var Index byte
 var UniverseIds = []string{}
 
 func MakeUuid() string {
@@ -30,6 +34,10 @@ func ReadInGlobalVars() {
 	ArgMap = argsToMap()
 	Username = persist.ReadFromFile("USERNAME")
 	Username = strings.TrimSpace(Username)
+	Server = persist.ReadFromFile("SERVER")
+	IndexString = persist.ReadFromFile("INDEX")
+	i, _ := strconv.Atoi(IndexString)
+	Index = byte(i)
 	ids := persist.ReadFromFile("UNIVERSE_IDS")
 	if ids != "" {
 		UniverseIds = strings.Split(ids, ",")

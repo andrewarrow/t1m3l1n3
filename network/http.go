@@ -25,6 +25,8 @@ func DoGet(route string) string {
 	request, _ := http.NewRequest("GET", urlString, nil)
 	request.Header.Set("User-Agent", agent)
 	request.Header.Set("Username", cli.Username)
+	request.Header.Set("TLZ-Server", cli.Server)
+	request.Header.Set("TLZ-Index", cli.IndexString)
 	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Timeout: time.Second * 500}
 	return DoHttpRead("GET", route, client, request)
@@ -58,6 +60,8 @@ func DoPost(route string, payload []byte) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("POST", urlString, body)
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("TLZ-Server", cli.Server)
+	request.Header.Set("TLZ-Index", cli.IndexString)
 	request.Header.Set("Username", cli.Username)
 	client := &http.Client{Timeout: time.Second * 50}
 

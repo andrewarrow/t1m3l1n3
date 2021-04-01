@@ -65,7 +65,7 @@ func main() {
 			i := byte(info["index"].(float64))
 			persist.SaveToFile("SERVER", s)
 			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
-			fmt.Println("Ok")
+			fmt.Println("Ok", s, i)
 		} else {
 			fmt.Println("Sorry I have no idea.")
 		}
@@ -74,7 +74,8 @@ func main() {
 		KeyGen()
 	} else if command == "idplease" {
 		s := persist.ReadFromFile("SERVER")
-		fmt.Println(s)
+		i := persist.ReadFromFile("INDEX")
+		fmt.Println(s, i)
 	} else if command == "verify" {
 		DoTestSignAndVerify()
 	} else if command == "sign" {
@@ -123,6 +124,6 @@ func main() {
 	} else if command == "post" {
 		cli.EnsureParamPass("text")
 		s := KeySign(cli.ArgMap["text"])
-		network.PostNewTimeline(cli.ArgMap["text"], cli.Username, s)
+		network.PostNewTimeline(cli.ArgMap["text"], s)
 	}
 }

@@ -43,12 +43,18 @@ func ToggleFollowPost(c *gin.Context) {
 	UniverseLock.Unlock()
 }
 
+func TlzIndex(c *gin.Context) byte {
+	index := c.Request.Header["TLZ-Index"]
+	i, _ := strconv.Atoi(index[0])
+	return byte(i)
+}
 func ShowTimelines(c *gin.Context) {
 
+	i := TlzIndex(c)
 	username := c.Param("username")
 	UniverseLock.Lock()
-	fromIndex := universes[uids[uidIndex]].UsernameToIndex(username) - 1
-	c.JSON(200, gin.H{"profile": universes[uids[uidIndex]].Profile[fromIndex]})
+	fromIndex := universes[uids[i]].UsernameToIndex(username) - 1
+	c.JSON(200, gin.H{"profile": universes[uids[i]].Profile[fromIndex]})
 	UniverseLock.Unlock()
 }
 
@@ -131,7 +137,8 @@ func CreateTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
 	t := Timeline{}
 	t.Text = m["text"]
-	t.From = m["username"]
+	t.From = c.Request.Header["Username"][0]
+	//index := c.Request.Header["TLZ-Index"]
 	s := m["s"]
 	sDec, _ := b64.StdEncoding.DecodeString(s)
 
@@ -193,8 +200,8 @@ func DisplayProfileTimelines(s string) {
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
-func PostNewTimeline(text, from, s string) {
-	m := map[string]string{"text": text, "username": from, "s": s}
+func PostNewTimeline(text, s string) {
+	m := map[string]string{"text": text, "s": s}
 	asBytes, _ := json.Marshal(m)
 	DoPost("timelines", asBytes)
 }

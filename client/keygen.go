@@ -44,7 +44,7 @@ func KeyGen() {
 	fmt.Printf("%s\n", string(pemEncodedPub))
 	fmt.Printf("\n\n")
 
-	DoTestSignAndVerify()
+	//DoTestSignAndVerify()
 }
 
 func DoTestSignAndVerify() {
