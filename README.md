@@ -120,3 +120,32 @@ for your timeline ls command.
 
 # Sample Use
 
+```
+[~/CLT/client] $ ./client 
+
+  client ls        # List recent timelines
+  client profile   # List recent timelines
+  client post      # Post new timeline with --text=hi
+  client auth      # Set your username --name=
+  client toggle    # Toggle follow --name=
+
+[~/CLT/client] $ ./client ls
+Inbox
+[~/CLT/client] $ ./client post --text=hi
+[~/CLT/client] $ ./client ls
+Inbox
+01.               andrew   less than a minute hi
+[~/CLT/client] $ ./client auth --name=bob
+Ok you are now: bob
+[~/CLT/client] $ ./client post --text=hi
+[~/CLT/client] $ ./client ls
+Inbox
+01.                  bob   less than a minute hi
+02.               andrew   less than a minute hi
+[~/CLT/client] $ ./client profile
+Profile
+01.                  bob   less than a minute hi
+[~/CLT/client] $ ./client profile --name=andrew
+Profile
+01.               andrew             1 minute hi
+```
