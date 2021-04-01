@@ -72,6 +72,14 @@ func MakeUniversesWithIds(ids []string) []string {
 				sDec, _ := b64.StdEncoding.DecodeString(v.(string))
 				u.UsernameKeys[k] = sDec
 			}
+			f = m["up_peers"].([]interface{})
+			for _, v := range f {
+				u.UpPeers = append(u.UpPeers, v.(string))
+			}
+			f = m["down_peers"].([]interface{})
+			for _, v := range f {
+				u.DownPeers = append(u.DownPeers, v.(string))
+			}
 		}
 		uids = append(uids, u.Id)
 		universes[u.Id] = u
@@ -105,6 +113,8 @@ func (u *Universe) Marshal() map[string]interface{} {
 	m["usernames"] = u.Usernames
 	m["username_keys"] = UsernameKeysPayload
 	m["user_created_at"] = u.UserCreatedAt
+	m["up_peers"] = u.UpPeers
+	m["down_peers"] = u.DownPeers
 
 	return m
 }
