@@ -1,4 +1,4 @@
-# timelinezilla
+# t1m3l1n3
 command line timeline server and client, distributed micro-blogging
 follow/unfollow network, in golang.
 
@@ -44,7 +44,7 @@ It's all about a decentralized twitter/timeline system that one
 company does not control. All it takes is $5 a month to rent a
 digitalocean server and place your one node in the system.
 
-As more and more people start to adopt TLZ, it will be harder to get
+As more and more people start to adopt TL, it will be harder to get
 first name usernames and still have your chain taken seriously by
 the N major other chains. And for free speach and who gets to set
 the rules? It's the person with the $5 credit card bill's decision.
@@ -64,7 +64,7 @@ media site.
 # Which one wins?
 
 They both co-exist but you vote with your attention and your wallet. You
-can choose to accept the TLZ chain where most of your friends are. You can
+can choose to accept the TL chain where most of your friends are. You can
 chose to spend your $5 a month node on the chain you like. You can even get
 two nodes and spend $10 a month or as much as you want.
 
@@ -86,7 +86,7 @@ guidelines? Yes.
 
 # Can you detach your name/public key from one node and move to another?
 
-Yes, when someone installs the TLZ client for the first time, they are given 
+Yes, when someone installs the TL client for the first time, they are given 
 the default chain. But you can configure your client to speak to another chain.
 Think of some very popular blogger like Matt Taibbi. You know where the REAL
 Matt Taibbi is blogging from right? At the time of writing this (March 2021) 
@@ -108,7 +108,7 @@ and another 64 and on and on.
 # About
 anyone is free to take the server binary and run it on a machine with
 a nice amount of RAM and publish the IP or domain name of your
-public TLZ server to the main list.
+public TL server to the main list.
 
 # Download the client
 When you run the client it will connect to the main server to get a copy
@@ -118,7 +118,7 @@ for your timeline ls command.
 # Sample Use
 
 ```
-[~/TLZ/client] $ ./client 
+[~/TL/client] $ ./client 
 
   client ls        # List recent timelines
   client profile   # List recent timelines
@@ -128,37 +128,37 @@ for your timeline ls command.
   client idplease  # tell me what server/node i'm connected to
   client taken     # taken usernames
 
-[~/TLZ/client] $ ./client ls
+[~/TL/client] $ ./client ls
 Inbox
-[~/TLZ/client] $ ./client post --text=hi
-[~/TLZ/client] $ ./client ls
+[~/TL/client] $ ./client post --text=hi
+[~/TL/client] $ ./client ls
 Inbox
 01.               andrew   less than a minute hi
-[~/TLZ/client] $ ./client auth --name=bob
+[~/TL/client] $ ./client auth --name=bob
 Ok you are now: bob
-[~/TLZ/client] $ ./client post --text=hi
-[~/TLZ/client] $ ./client ls
+[~/TL/client] $ ./client post --text=hi
+[~/TL/client] $ ./client ls
 Inbox
 01.                  bob   less than a minute hi
 02.               andrew   less than a minute hi
-[~/TLZ/client] $ ./client profile
+[~/TL/client] $ ./client profile
 Profile
 01.                  bob   less than a minute hi
-[~/TLZ/client] $ ./client profile --name=andrew
+[~/TL/client] $ ./client profile --name=andrew
 Profile
 01.               andrew             1 minute hi
-[~/TLZ/client] $ ./client auth --name=andrew
+[~/TL/client] $ ./client auth --name=andrew
 This username already taken!
-[~/TLZ/client] $ ./client auth --name=andrew2
+[~/TL/client] $ ./client auth --name=andrew2
 Ok you are now: andrew2
-[~/TLZ/client] $ ./client idplease
+[~/TL/client] $ ./client idplease
 localhost:8080
 
-[~/TLZ/client] $ ./client taken
+[~/TL/client] $ ./client taken
 {"users":[{"ts":1617232944,"username":"andrew"},{"ts":1617241169,"username":"andrew2"},{"ts":1617238813,"username":"bob"}]}
-[~/TLZ/client] $ ./client auth --name=sue
+[~/TL/client] $ ./client auth --name=sue
 Ok you are now: sue
-[~/TLZ/client] $ ./client taken
+[~/TL/client] $ ./client taken
 {"users":[{"ts":1617242196,"username":"sue"},{"ts":1617232944,"username":"andrew"},{"ts":1617241169,"username":"andrew2"},{"ts":1617238813,"username":"bob"}]}
 
 ```
