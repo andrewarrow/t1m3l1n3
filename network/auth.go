@@ -7,6 +7,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Suggest(c *gin.Context) {
+	c.JSON(200, gin.H{"new_place_avail": true, "server": "localhost:8081"})
+}
+
+func SuggestNewPlaceToAuth() map[string]interface{} {
+	jsonString := DoPost("suggest", []byte{})
+	if jsonString == "" {
+		return map[string]interface{}{}
+	}
+	var thing map[string]interface{}
+	json.Unmarshal([]byte(jsonString), &thing)
+	return thing
+}
+
 func PostNewAuth(name, pub string) map[string]interface{} {
 	m := map[string]string{"username": name, "pub": pub}
 	asBytes, _ := json.Marshal(m)

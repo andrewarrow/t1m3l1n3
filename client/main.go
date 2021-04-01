@@ -24,6 +24,7 @@ func PrintHelp() {
 	fmt.Println("  client universe  # Display universe json")
 	fmt.Println("  client idplease  # tell me what server/node i'm connected to")
 	fmt.Println("  client taken     # taken usernames")
+	fmt.Println("  client suggest   # suggest a new universe with less users")
 	fmt.Println("")
 }
 
@@ -57,6 +58,17 @@ func main() {
 		cli.EnsureParamPass("name")
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
 		fmt.Println(s)
+	} else if command == "suggest" {
+		s := network.DoGet(fmt.Sprintf("suggest"))
+		fmt.Println(s)
+		info := network.SuggestNewPlaceToAuth()
+		if info["new_place_avail"].(bool) {
+			s := info["server"].(string)
+			persist.SaveToFile("SERVER", s)
+			fmt.Println("Ok")
+		} else {
+			fmt.Println("Sorry I have no idea.")
+		}
 	} else if command == "keygen" {
 		cli.EnsureParamPass("overwrite")
 		KeyGen()
