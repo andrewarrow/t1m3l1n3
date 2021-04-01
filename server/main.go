@@ -25,7 +25,7 @@ func main() {
 
 	if len(cli.UniverseIds) == 0 {
 		if cli.ArgMap["universes"] == "" {
-			cli.ArgMap["universes"] = "2"
+			cli.ArgMap["universes"] = "64"
 		}
 		ids := network.MakeUniverses(cli.ArgMap["universes"])
 		persist.SaveToFile("UNIVERSE_IDS", strings.Join(ids, ","))

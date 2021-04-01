@@ -22,6 +22,8 @@ type Universe struct {
 	Profile       map[byte][]*Timeline
 	UserCount     byte
 	Id            string
+	UpPeers       []string
+	DownPeers     []string
 }
 
 func MakeUniverses(s string) []string {
@@ -31,6 +33,15 @@ func MakeUniverses(s string) []string {
 		uids = append(uids, u.Id)
 		universes[u.Id] = u
 	}
+	root := universes[uids[0]]
+	DownPeers := []string{}
+	for i := 1; i < max; i++ {
+		universes[uids[i]].UpPeers = []string{"localhost:8080,0"}
+		DownPeers = append(DownPeers, fmt.Sprintf("localhost:8080,%d", i))
+	}
+	root.UpPeers = []string{}
+	root.DownPeers = DownPeers
+
 	return uids
 }
 func MakeUniversesWithIds(ids []string) []string {
@@ -161,6 +172,8 @@ func NewUniverse() *Universe {
 	u.Id = cli.MakeUuid()
 	u.Following = []uint64{}
 
+	u.UpPeers = []string{}
+	u.DownPeers = []string{}
 	u.Usernames = map[string]byte{}
 	u.UsernameKeys = map[string][]byte{}
 	u.UserCreatedAt = map[string]int64{}

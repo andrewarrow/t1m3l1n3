@@ -1,6 +1,24 @@
 ./server start 
 
 
+In a world with just two complete Universes:
+
+Ua = 64x64 follow matrix
+Ub = 64x64 follow matrix
+
+In order for a user in Ub to follow a user in Ua, Ua and Ub have to
+link and agree on the same username space.
+
+When linking, either Ua adds Ub to it's UpPeers, and Ub adds Ua to its DownPeers...
+or the other way around.
+
+The UpPeers break ties for usernames.
+
+If your universe is new and you want to link to another more establish one, you
+are going to have to tell a few of your 64 users that their usernames have to change.
+
+
+
 
 
 You are in rooms with 64 people.
