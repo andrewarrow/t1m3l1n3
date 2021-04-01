@@ -8,7 +8,7 @@ import (
 )
 
 func Suggest(c *gin.Context) {
-	c.JSON(200, gin.H{"new_place_avail": true, "server": "localhost:8081"})
+	c.JSON(200, gin.H{"new_place_avail": true, "server": "localhost:8080", "index": 1})
 }
 
 func SuggestNewPlaceToAuth() map[string]interface{} {
@@ -43,7 +43,7 @@ func CreateUserKey(c *gin.Context) {
 		universes[uids[uidIndex]].UsernameKeys[name] = []byte(pub)
 		universes[uids[uidIndex]].UserCreatedAt[name] = time.Now().Unix()
 		universes[uids[uidIndex]].UserCount++
-		c.JSON(200, gin.H{"user_created": true, "server": "localhost:8080"})
+		c.JSON(200, gin.H{"user_created": true, "server": "localhost:8080", "index": 0})
 	} else {
 		c.JSON(200, gin.H{"user_created": false})
 	}

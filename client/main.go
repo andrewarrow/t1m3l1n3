@@ -62,7 +62,9 @@ func main() {
 		info := network.SuggestNewPlaceToAuth()
 		if info["new_place_avail"].(bool) {
 			s := info["server"].(string)
+			i := byte(info["index"].(float64))
 			persist.SaveToFile("SERVER", s)
+			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
 			fmt.Println("Ok")
 		} else {
 			fmt.Println("Sorry I have no idea.")
@@ -93,8 +95,10 @@ func main() {
 		auth := network.PostNewAuth(cli.ArgMap["name"], pub)
 		if auth["user_created"].(bool) {
 			s := auth["server"].(string)
+			i := byte(auth["index"].(float64))
 			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 			persist.SaveToFile("SERVER", s)
+			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
 			fmt.Println("Ok you are now:", cli.ArgMap["name"])
 		} else {
 			fmt.Println("This username already taken!")
