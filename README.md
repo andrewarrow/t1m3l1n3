@@ -1,5 +1,6 @@
 # timelinezilla
-timelinezilla
+command line timeline server and client, distributed micro-blogging
+follow/unfollow network, in golang.
 
 # Vision
 Picture a 64x64 chessboard and place a pawn in every square.
