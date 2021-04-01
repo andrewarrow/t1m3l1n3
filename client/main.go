@@ -22,6 +22,7 @@ func PrintHelp() {
 	fmt.Println("  client simulate  # Simulate traffic")
 	fmt.Println("  client toggle    # Toggle follow --name=")
 	fmt.Println("  client universe  # Display universe json")
+	fmt.Println("  client idplease  # tell me what server/node i'm connected to")
 	fmt.Println("")
 }
 
@@ -55,6 +56,9 @@ func main() {
 	} else if command == "keygen" {
 		cli.EnsureParamPass("overwrite")
 		KeyGen()
+	} else if command == "idplease" {
+		s := network.DoGet("idplease")
+		fmt.Println(s)
 	} else if command == "verify" {
 		DoTestSignAndVerify()
 	} else if command == "sign" {

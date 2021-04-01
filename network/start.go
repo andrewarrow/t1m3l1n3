@@ -24,6 +24,7 @@ func Start(c chan bool, port, host string) {
 	r.POST("/follow/:username", ToggleFollowPost)
 	r.GET("/universe", ShowUniverse)
 	r.POST("/auth", CreateUserKey)
+	r.GET("/idplease", IdPlease)
 	if host == "main" {
 		r.GET("/servers", ShowServers)
 		r.POST("/servers", AddServer)
