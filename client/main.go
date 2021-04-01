@@ -57,7 +57,7 @@ func main() {
 		cli.EnsureParamPass("overwrite")
 		KeyGen()
 	} else if command == "idplease" {
-		s := network.DoGet("idplease")
+		s := persist.ReadFromFile("SERVER")
 		fmt.Println(s)
 	} else if command == "verify" {
 		DoTestSignAndVerify()
