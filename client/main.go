@@ -76,11 +76,14 @@ func main() {
 	} else if command == "auth" {
 		cli.EnsureParamPass("name")
 		pub := persist.ReadFromFile("PUBLIC_KEY")
-		if network.PostNewAuth(cli.ArgMap["name"], pub) {
+		auth := network.PostNewAuth(cli.ArgMap["name"], pub)
+		if auth["user_created"].(bool) {
+			s := auth["server"].(string)
 			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
+			persist.SaveToFile("SERVER", s)
 			fmt.Println("Ok you are now:", cli.ArgMap["name"])
 		} else {
-			fmt.Println("error")
+			fmt.Println("This username already taken!")
 		}
 	} else if command == "simulate" {
 		people := []string{"bob", "alice", "candy", "mike", "dave", "chris", "pam", "abigail", "emma", "luna",
