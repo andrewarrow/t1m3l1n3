@@ -59,8 +59,6 @@ func main() {
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
 		fmt.Println(s)
 	} else if command == "suggest" {
-		s := network.DoGet(fmt.Sprintf("suggest"))
-		fmt.Println(s)
 		info := network.SuggestNewPlaceToAuth()
 		if info["new_place_avail"].(bool) {
 			s := info["server"].(string)

@@ -1,5 +1,5 @@
-# CLT
-command line timelines
+# timelinezilla
+timelinezilla
 
 # Vision
 Picture a 64x64 chessboard and place a pawn in every square.
@@ -104,16 +104,12 @@ no one big company paying ALL the hosting and therefore making ALL the rules.
 But 64 people isn't very many people. So you need to band together with another 64
 and another 64 and on and on.
 
-
-
-
-
 # About
 anyone is free to take the server binary and run it on a machine with
 a nice amount of RAM and publish the IP or domain name of your
 public CLT server to the main list.
 
-# Download the clt client
+# Download the client
 When you run the client it will connect to the main server to get a copy
 of the main list. Then it will pick a random server from that list to query
 for your timeline ls command.
