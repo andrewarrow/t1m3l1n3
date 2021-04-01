@@ -25,6 +25,7 @@ func Start(c chan bool, port, host string) {
 	r.GET("/universe", ShowUniverse)
 	r.POST("/auth", CreateUserKey)
 	r.GET("/idplease", IdPlease)
+	r.GET("/taken", ShowUsers)
 	if host == "main" {
 		r.GET("/servers", ShowServers)
 		r.POST("/servers", AddServer)

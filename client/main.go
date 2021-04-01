@@ -23,6 +23,7 @@ func PrintHelp() {
 	fmt.Println("  client toggle    # Toggle follow --name=")
 	fmt.Println("  client universe  # Display universe json")
 	fmt.Println("  client idplease  # tell me what server/node i'm connected to")
+	fmt.Println("  client taken     # taken usernames")
 	fmt.Println("")
 }
 
@@ -49,6 +50,9 @@ func main() {
 		s := network.DoGet(fmt.Sprintf("timelines/%s", username))
 		//fmt.Println(s)
 		network.DisplayProfileTimelines(s)
+	} else if command == "taken" {
+		s := network.DoGet(fmt.Sprintf("taken"))
+		fmt.Println(s)
 	} else if command == "toggle" {
 		cli.EnsureParamPass("name")
 		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})

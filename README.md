@@ -129,6 +129,7 @@ for your timeline ls command.
   client auth      # Set your username --name=
   client toggle    # Toggle follow --name=
   client idplease  # tell me what server/node i'm connected to
+  client taken     # taken usernames
 
 [~/CLT/client] $ ./client ls
 Inbox
@@ -155,5 +156,12 @@ This username already taken!
 Ok you are now: andrew2
 [~/CLT/client] $ ./client idplease
 localhost:8080
+
+[~/CLT/client] $ ./client taken
+{"users":[{"ts":1617232944,"username":"andrew"},{"ts":1617241169,"username":"andrew2"},{"ts":1617238813,"username":"bob"}]}
+[~/CLT/client] $ ./client auth --name=sue
+Ok you are now: sue
+[~/CLT/client] $ ./client taken
+{"users":[{"ts":1617242196,"username":"sue"},{"ts":1617232944,"username":"andrew"},{"ts":1617241169,"username":"andrew2"},{"ts":1617238813,"username":"bob"}]}
 
 ```
