@@ -128,6 +128,7 @@ for your timeline ls command.
   client post      # Post new timeline with --text=hi
   client auth      # Set your username --name=
   client toggle    # Toggle follow --name=
+  client idplease  # tell me what server/node i'm connected to
 
 [~/CLT/client] $ ./client ls
 Inbox
@@ -148,4 +149,11 @@ Profile
 [~/CLT/client] $ ./client profile --name=andrew
 Profile
 01.               andrew             1 minute hi
+[~/CLT/client] $ ./client auth --name=andrew
+This username already taken!
+[~/CLT/client] $ ./client auth --name=andrew2
+Ok you are now: andrew2
+[~/CLT/client] $ ./client idplease
+localhost:8080
+
 ```
