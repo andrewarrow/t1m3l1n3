@@ -197,6 +197,11 @@ func DisplayProfileTimelines(s string) {
 			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 	}
 }
+func PostNewTimelineAs(text, username string) {
+	m := map[string]string{"text": text, "username": username}
+	asBytes, _ := json.Marshal(m)
+	DoPost("timelines_as", asBytes)
+}
 func PostNewTimeline(text, s string) {
 	m := map[string]string{"text": text, "s": s}
 	asBytes, _ := json.Marshal(m)

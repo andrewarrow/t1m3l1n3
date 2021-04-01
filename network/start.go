@@ -20,6 +20,7 @@ func Start(c chan bool, port, host string) {
 	r.GET("/timelines", ShowInbox)
 	r.GET("/timelines/:username", ShowTimelines)
 	r.POST("/timelines", CreateTimeline)
+	r.POST("/timelines_as", CreateTimelineAs)
 	r.POST("/timelines/notify", NotifyTimeline)
 	r.POST("/follow/:username", ToggleFollowPost)
 	r.GET("/universe", ShowUniverse)

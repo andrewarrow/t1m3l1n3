@@ -1,5 +1,5 @@
 # t1m3l1n3
-command line timeline server and client, distributed micro-blogging
+command line timeline server and client, decentralized micro-blogging
 follow/unfollow network, in golang.
 
 # Vision

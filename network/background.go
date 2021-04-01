@@ -10,7 +10,7 @@ import (
 func BackgroundThread() {
 	for {
 		log.Println("Background Thread...")
-		time.Sleep(time.Second * 60)
+		time.Sleep(time.Second * 6)
 		UniverseLock.Lock()
 		for id, u := range universes {
 			asBytes, _ := json.Marshal(u.Marshal())

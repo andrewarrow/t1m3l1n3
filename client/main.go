@@ -124,10 +124,8 @@ func main() {
 		words := []string{"hi", "there"}
 
 		for _, person := range people {
-			fmt.Println(person)
 			for _, word := range words {
-				s := KeySign(word)
-				network.PostNewTimeline(word, s)
+				network.PostNewTimelineAs(word, person)
 				time.Sleep(time.Millisecond * 20)
 			}
 		}
