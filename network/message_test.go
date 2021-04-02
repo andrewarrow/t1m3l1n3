@@ -23,6 +23,9 @@ func TestMessage(t *testing.T) {
 
 	ms = m.Score()
 	fmt.Println(ms.Debug())
+	m.Text = "Respectfully, I disagree. The decision is much more personal and nuanced. There can be a myriad of reasons to change your name, including taking your partner's name if you get married. It could be an aesthetic choice or due to family estrangement."
+	ms = m.Score()
+	fmt.Println(ms.Debug())
 	//if testJson != expected {
 	//	t.Fatal()
 	//}
