@@ -2,6 +2,8 @@
 command line timeline server and client, decentralized micro-blogging
 follow/unfollow network, in golang.
 
+![logo] (https://repository-images.githubusercontent.com/352111156/bb7aef80-938d-11eb-8f1d-64f98d44309e)
+
 # Vision
 Picture a 64x64 chessboard and place a pawn in every square.
 By default in these universes, you follow 63 other people and they

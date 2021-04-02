@@ -15,6 +15,7 @@ import (
 
 type Universe struct {
 	Following     []uint64
+	AsViewer      []uint64
 	Inboxes       map[byte][]*Timeline
 	Usernames     map[string]byte
 	UserCreatedAt map[string]int64
