@@ -56,8 +56,21 @@ func (m *Message) Score() *MessageScore {
 	sumM := 0
 	sumF := 0
 	sumG := 0
+	Switches := 0
+	LongestRun := 0
+	MaxLongestRun := 0
+	Prev := ""
 	for i := range joined {
 		c := joined[i : i+1]
+		if c != Prev {
+			Switches++
+			if LongestRun > MaxLongestRun {
+				MaxLongestRun = LongestRun
+			}
+			LongestRun = 0
+		} else {
+			LongestRun++
+		}
 		if c == "m" {
 			sumM++
 		} else if c == "f" {
@@ -65,10 +78,13 @@ func (m *Message) Score() *MessageScore {
 		} else if c == "." {
 			sumG++
 		}
+		Prev = c
 	}
 	ms.PercentM = float64(sumM) / float64(len(joined))
 	ms.PercentF = float64(sumF) / float64(len(joined))
 	ms.PercentG = float64(sumG) / float64(len(joined))
+	ms.LongestRun = MaxLongestRun
+	ms.Switches = Switches
 	fmt.Printf("%s\n%+v\n", joined, ms)
 	return &ms
 }
