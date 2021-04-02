@@ -28,7 +28,18 @@ func AsciiByteToBase9(a string) byte {
 
 }
 
-func (m *Message) Score() {
+type MessageScore struct {
+	M          *Message
+	PercentM   float64
+	PercentF   float64
+	PercentG   float64
+	LongestRun int
+	Switches   int
+}
+
+func (m *Message) Score() *MessageScore {
+	ms := MessageScore{}
+	ms.M = m
 	buff := []string{}
 	for _, a := range m.Text {
 		num := fmt.Sprintf("%d", a)
@@ -41,5 +52,23 @@ func (m *Message) Score() {
 			buff = append(buff, ".")
 		}
 	}
-	fmt.Printf("%s\n", strings.Join(buff, ""))
+	joined := strings.Join(buff, "")
+	sumM := 0
+	sumF := 0
+	sumG := 0
+	for i := range joined {
+		c := joined[i : i+1]
+		if c == "m" {
+			sumM++
+		} else if c == "f" {
+			sumF++
+		} else if c == "." {
+			sumG++
+		}
+	}
+	ms.PercentM = float64(sumM) / float64(len(joined))
+	ms.PercentF = float64(sumF) / float64(len(joined))
+	ms.PercentG = float64(sumG) / float64(len(joined))
+	fmt.Printf("%s\n%+v\n", joined, ms)
+	return &ms
 }
