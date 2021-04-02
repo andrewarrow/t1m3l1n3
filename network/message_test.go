@@ -9,6 +9,10 @@ func TestMessage(t *testing.T) {
 	// f m 9 9 3 f f f 6 f f m m f f f m m f m 6 9 9 f f m f f 9 3 6 m m m
 	// f m 9 9 M f f f F f f m m f f f m m f m F 9 9 f f m f f 9 M F m m m
 	// . m - - m . . . . . . m m . . . m m . m . - - . . m . . - m . m m m
+	m.Text = "this is an entirely different kind of message."
+	// fffffffffmfmmfffm.mfmfmmmfmmffffmmfmmfmmfffmmm
+	m.Text = "Is there any reason to believe that this actually happened? Conveniently, it was published on April 1st. The story itself would be a great April Fools' prank. :)"
+	// fffffffffmfmmfffm.mfmfmmmfmmffffmmfmmfmmfffmmm
 
 	m.Score()
 	//if testJson != expected {

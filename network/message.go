@@ -3,6 +3,7 @@ package network
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type Message struct {
@@ -28,10 +29,17 @@ func AsciiByteToBase9(a string) byte {
 }
 
 func (m *Message) Score() {
+	buff := []string{}
 	for _, a := range m.Text {
 		num := fmt.Sprintf("%d", a)
-		base9 := AsciiByteToBase9(num)
-		fmt.Printf("%d ", base9)
+		base9 := fmt.Sprintf("%d", AsciiByteToBase9(num))
+		if base9 == "5" || base9 == "7" || base9 == "8" || base9 == "6" {
+			buff = append(buff, "f")
+		} else if base9 == "3" || base9 == "1" || base9 == "2" || base9 == "4" {
+			buff = append(buff, "m")
+		} else if base9 == "9" {
+			buff = append(buff, ".")
+		}
 	}
-	fmt.Printf("\n")
+	fmt.Printf("%s\n", strings.Join(buff, ""))
 }
