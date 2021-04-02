@@ -29,12 +29,14 @@ func AsciiByteToBase9(a string) byte {
 }
 
 type MessageScore struct {
-	M          *Message
-	PercentM   float64
-	PercentF   float64
-	PercentG   float64
-	LongestRun int
-	Switches   int
+	M             *Message
+	PercentM      float64
+	PercentF      float64
+	PercentG      float64
+	LongestRun    int
+	LongestFlavor string
+	Switches      int
+	Joined        string
 }
 
 func (m *Message) Score() *MessageScore {
@@ -60,12 +62,14 @@ func (m *Message) Score() *MessageScore {
 	LongestRun := 0
 	MaxLongestRun := 0
 	Prev := ""
+	MaxLongestRunFlavor := ""
 	for i := range joined {
 		c := joined[i : i+1]
 		if c != Prev {
 			Switches++
 			if LongestRun > MaxLongestRun {
 				MaxLongestRun = LongestRun
+				MaxLongestRunFlavor = Prev
 			}
 			LongestRun = 0
 		} else {
@@ -84,7 +88,19 @@ func (m *Message) Score() *MessageScore {
 	ms.PercentF = float64(sumF) / float64(len(joined))
 	ms.PercentG = float64(sumG) / float64(len(joined))
 	ms.LongestRun = MaxLongestRun
+	ms.LongestFlavor = MaxLongestRunFlavor
+	ms.Joined = joined
 	ms.Switches = Switches
-	fmt.Printf("%s\n%+v\n", joined, ms)
+	//fmt.Printf("%s\n%+v\n", joined, ms)
 	return &ms
+}
+
+func (ms *MessageScore) Debug() string {
+	buff := []string{}
+	buff = append(buff, fmt.Sprintf("%s\n", ms.M.Text))
+	buff = append(buff, fmt.Sprintf("%s\n", ms.Joined))
+	buff = append(buff, fmt.Sprintf("%f %f %f\n", ms.PercentM, ms.PercentF, ms.PercentG))
+	buff = append(buff, fmt.Sprintf("%s %d\n", ms.LongestFlavor, ms.LongestRun))
+	buff = append(buff, fmt.Sprintf("%d\n\n", ms.Switches))
+	return strings.Join(buff, "")
 }
