@@ -1,13 +1,13 @@
 package main
 
 import (
-	"clt/cli"
-	"clt/network"
-	"clt/persist"
 	"fmt"
 	"math/rand"
 	"os"
 	"strings"
+	"t1m3l1n3/cli"
+	"t1m3l1n3/network"
+	"t1m3l1n3/persist"
 	"time"
 )
 

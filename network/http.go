@@ -2,11 +2,11 @@ package network
 
 import (
 	"bytes"
-	"clt/cli"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"t1m3l1n3/cli"
 	"time"
 )
 

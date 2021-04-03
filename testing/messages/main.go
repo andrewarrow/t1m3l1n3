@@ -1,13 +1,13 @@
 package main
 
 import (
-	"clt/keys"
-	"clt/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"strings"
+	"t1m3l1n3/keys"
+	"t1m3l1n3/network"
 	"time"
 )
 

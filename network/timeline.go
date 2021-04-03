@@ -1,7 +1,6 @@
 package network
 
 import (
-	"clt/keys"
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -9,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"t1m3l1n3/keys"
 	"time"
 
 	"github.com/justincampbell/timeago"

@@ -1,13 +1,13 @@
 package network
 
 import (
-	"clt/cli"
-	"clt/persist"
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
+	"t1m3l1n3/cli"
+	"t1m3l1n3/persist"
 	"time"
 
 	"github.com/gin-gonic/gin"

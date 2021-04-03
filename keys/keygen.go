@@ -1,7 +1,6 @@
 package keys
 
 import (
-	"clt/persist"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
@@ -10,6 +9,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"t1m3l1n3/persist"
 )
 
 func KeyGen() (string, string) {

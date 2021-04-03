@@ -1,12 +1,12 @@
 package cli
 
 import (
-	"clt/persist"
 	"crypto/rand"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+	"t1m3l1n3/persist"
 )
 
 var ArgMap = map[string]string{}
