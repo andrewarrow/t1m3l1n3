@@ -41,7 +41,8 @@ func main() {
 	command := os.Args[1]
 
 	if persist.ReadFromFile("PUBLIC_KEY") == "" {
-		KeyGen()
+		priv, pub := KeyGen()
+		KeyGenSave(priv, pub)
 	}
 
 	if command == "profile" {
@@ -76,7 +77,8 @@ func main() {
 		}
 	} else if command == "keygen" {
 		cli.EnsureParamPass("overwrite")
-		KeyGen()
+		priv, pub := KeyGen()
+		KeyGenSave(priv, pub)
 	} else if command == "idplease" {
 		s := persist.ReadFromFile("SERVER")
 		i := persist.ReadFromFile("INDEX")

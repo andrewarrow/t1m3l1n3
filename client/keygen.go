@@ -12,7 +12,7 @@ import (
 	"os"
 )
 
-func KeyGen() {
+func KeyGen() (string, string) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 
 	if err != nil {
@@ -23,15 +23,19 @@ func KeyGen() {
 	var privateKeyBytes []byte = x509.MarshalPKCS1PrivateKey(privateKey)
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: privateKeyBytes})
 
-	location := persist.UserHomeDir()
-	persist.SaveToFile("PRIVATE_KEY", string(pemEncoded))
-	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
-
 	pubkey := &privateKey.PublicKey
 
 	x509EncodedPub, _ := x509.MarshalPKIXPublicKey(pubkey)
 	pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "RSA PUBLIC KEY", Bytes: x509EncodedPub})
-	persist.SaveToFile("PUBLIC_KEY", string(pemEncodedPub))
+
+	return string(pemEncoded), string(pemEncodedPub)
+}
+func KeyGenSave(priv, pub string) {
+	location := persist.UserHomeDir()
+	persist.SaveToFile("PRIVATE_KEY", priv)
+	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
+
+	persist.SaveToFile("PUBLIC_KEY", pub)
 	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
 
 	fmt.Printf("\n\n")
@@ -40,8 +44,8 @@ func KeyGen() {
 	fmt.Printf("THERE IS NO FORGET PASSWORD LINK THIS IS IT \n")
 	fmt.Printf("-------------------\n")
 	fmt.Printf("\n\n")
-	fmt.Printf("%s\n", string(pemEncoded))
-	fmt.Printf("%s\n", string(pemEncodedPub))
+	fmt.Printf("%s\n", priv)
+	fmt.Printf("%s\n", pub)
 	fmt.Printf("\n\n")
 
 	//DoTestSignAndVerify()
