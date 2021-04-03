@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"t1m3l1n3/cli"
 	"t1m3l1n3/persist"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -149,7 +148,7 @@ func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
 		u.Recent = u.Recent[0:100]
 	}
 	u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
-	for i := byte(0); i < size; i++ {
+	for i := byte(0); i < maxUsersPerUniverse; i++ {
 		if u.ShouldDeliverFrom(fromIndex, i) {
 			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
 		}
@@ -171,7 +170,7 @@ func (u *Universe) ShouldDeliverFrom(from, to byte) bool {
 func (u *Universe) UsernameToIndex(username string) byte {
 	log.Println("    UsernameToIndex", username)
 	if u.Usernames[username] == 0 {
-		if u.UserCount == size {
+		if u.UserCount == maxUsersPerUniverse {
 			log.Println("    SIZE")
 			return 0
 		}
@@ -193,24 +192,12 @@ func NewUniverse() *Universe {
 	u.Usernames = map[string]byte{}
 	u.UsernameKeys = map[string][]byte{}
 	u.UserCreatedAt = map[string]int64{}
-	u.UsernameToIndex("sysop")
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}
 
-	t := Timeline{}
-	t.Text = "Welcome to CLT"
-	t.From = "sysop"
-	t.PostedAt = time.Now().Unix()
-	u.Profile[0] = []*Timeline{&t}
-	for i := 0; i < size; i++ {
+	for i := 0; i < maxUsersPerUniverse; i++ {
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)
 	}
-	for i := byte(0); i < u.UserCount; i++ {
-		welcome := []*Timeline{&t}
-		u.Inboxes[i] = welcome
-	}
 
-	fmt.Println(u.Following)
-	fmt.Println(u.Inboxes)
 	return &u
 }

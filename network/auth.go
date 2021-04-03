@@ -12,7 +12,7 @@ func Suggest(c *gin.Context) {
 }
 
 func SuggestNewPlaceToAuth() map[string]interface{} {
-	jsonString := DoPost("", "suggest", []byte{})
+	jsonString := DoPost("", "", "suggest", []byte{})
 	if jsonString == "" {
 		return map[string]interface{}{}
 	}
@@ -24,7 +24,7 @@ func SuggestNewPlaceToAuth() map[string]interface{} {
 func PostNewAuth(name, pub string) map[string]interface{} {
 	m := map[string]string{"username": name, "pub": pub}
 	asBytes, _ := json.Marshal(m)
-	jsonString := DoPost("", "auth", asBytes)
+	jsonString := DoPost("", "", "auth", asBytes)
 	if jsonString == "" {
 		return map[string]interface{}{}
 	}
@@ -39,11 +39,17 @@ func CreateUserKey(c *gin.Context) {
 	pub := m["pub"]
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
+	if universes[uids[uidIndex]].UserCount == maxUsersPerUniverse {
+		uidIndex++
+	}
 	if len(universes[uids[uidIndex]].UsernameKeys[name]) == 0 {
 		universes[uids[uidIndex]].UsernameKeys[name] = []byte(pub)
 		universes[uids[uidIndex]].UserCreatedAt[name] = time.Now().Unix()
 		universes[uids[uidIndex]].UserCount++
-		c.JSON(200, gin.H{"user_created": true, "server": "localhost:8080", "index": 0})
+		c.JSON(200, gin.H{"user_created": true,
+			"universe_id": uids[uidIndex],
+			"server":      "localhost:8080",
+			"index":       0})
 	} else {
 		c.JSON(200, gin.H{"user_created": false})
 	}

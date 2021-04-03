@@ -1,3 +1,3 @@
 package network
 
-const size = 64
+const maxUsersPerUniverse = 2

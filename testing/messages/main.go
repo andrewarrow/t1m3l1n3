@@ -28,7 +28,7 @@ func main() {
 				m := map[string]string{}
 				m["text"] = thing
 				asBytes, _ := json.Marshal(m)
-				s := network.DoPost("", "score", asBytes)
+				s := network.DoPost("", "", "score", asBytes)
 				var mm map[string]interface{}
 				json.Unmarshal([]byte(s), &mm)
 				score := mm["score"].(map[string]interface{})
@@ -56,29 +56,36 @@ func main() {
 	}
 
 	bobPriv, bobPub := keys.KeyGen()
-	network.PostNewAuth("bob", bobPub)
+	authJson := network.PostNewAuth("bob", bobPub)
+	bobUid := authJson["universe_id"].(string)
+
 	suePriv, suePub := keys.KeyGen()
-	network.PostNewAuth("sue", suePub)
+	authJson = network.PostNewAuth("sue", suePub)
+	sueUid := authJson["universe_id"].(string)
+
 	mikePriv, mikePub := keys.KeyGen()
-	network.PostNewAuth("mike", mikePub)
+	authJson = network.PostNewAuth("bob", mikePub)
+	mikeUid := authJson["universe_id"].(string)
+
 	maryPriv, maryPub := keys.KeyGen()
-	network.PostNewAuth("mary", maryPub)
+	authJson = network.PostNewAuth("sue", maryPub)
+	maryUid := authJson["universe_id"].(string)
 
 	c := make(chan bool, 1)
-	go PostAs(bobPriv, "bob", vg_more_m)
-	go PostAs(suePriv, "sue", vg_more_f)
-	go PostAs(mikePriv, "mike", lg_more_m)
-	go PostAs(maryPriv, "mary", lg_more_f)
+	go PostAs(bobUid, bobPriv, "bob", vg_more_m)
+	go PostAs(sueUid, suePriv, "sue", vg_more_f)
+	go PostAs(mikeUid, mikePriv, "bob", lg_more_m)
+	go PostAs(maryUid, maryPriv, "sue", lg_more_f)
 	<-c
 }
 
-func PostAs(priv, name string, messages []string) {
+func PostAs(uid, priv, name string, messages []string) {
 	for {
 		fmt.Println(name)
 
 		text := messages[rand.Intn(len(messages))]
 		s := keys.KeySign(priv, text)
-		network.PostNewTimeline(name, text, s)
+		network.PostNewTimeline(uid, name, text, s)
 
 		time.Sleep(time.Second * 2)
 	}
