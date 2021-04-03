@@ -15,7 +15,7 @@ import (
 
 type Universe struct {
 	Following     []uint64
-	AsViewer      []uint64
+	Recent        []*Timeline
 	Inboxes       map[byte][]*Timeline
 	Usernames     map[string]byte
 	UserCreatedAt map[string]int64
@@ -144,6 +144,10 @@ func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
 		// no more room
 		return false
 	}
+	u.Recent = append([]*Timeline{t}, u.Recent...)
+	if len(u.Recent) > 100 {
+		u.Recent = u.Recent[0:100]
+	}
 	u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
 	for i := byte(0); i < size; i++ {
 		if u.ShouldDeliverFrom(fromIndex, i) {
@@ -183,6 +187,7 @@ func NewUniverse() *Universe {
 	u.Id = cli.MakeUuid()
 	u.Following = []uint64{}
 
+	u.Recent = []*Timeline{}
 	u.UpPeers = []string{}
 	u.DownPeers = []string{}
 	u.Usernames = map[string]byte{}

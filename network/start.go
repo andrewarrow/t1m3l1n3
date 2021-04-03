@@ -17,7 +17,7 @@ func Start(c chan bool, port, host string) {
 	fmt.Println("starting...")
 
 	r := gin.Default()
-	r.GET("/timelines", ShowInbox)
+	r.GET("/timelines", ShowRecent)
 	r.GET("/timelines/:username", ShowTimelines)
 	r.POST("/timelines", CreateTimeline)
 	r.POST("/timelines_as", CreateTimelineAs)

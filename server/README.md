@@ -1,6 +1,36 @@
 ./server start 
 
 
+0aa                         1jen
+0spotman                    1alex
+0tanguy                     1jay
+0d                          1luise
+0cs                         1lisa
+0jeff                       1reah
+0zero                       1mike
+0mike                       1zero
+
+0aa - hello
+
+u0 stores this message
+
+1jen - hi
+
+u1 stores this message
+
+List All Messages:
+
+0aa - hello
+1jen - hi
+
+
+
+
+
+
+
+
+
 In a world with just two complete Universes:
 
 Ua = 64x64 follow matrix

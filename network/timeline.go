@@ -11,23 +11,8 @@ import (
 	"t1m3l1n3/keys"
 	"time"
 
-	"github.com/justincampbell/timeago"
-
 	"github.com/gin-gonic/gin"
 )
-
-func ShowInbox(c *gin.Context) {
-	i := TlzIndex(c)
-	from := c.Request.Header["Username"]
-	UniverseLock.Lock()
-	defer UniverseLock.Unlock()
-	fromIndex := universes[uids[i]].UsernameToIndex(from[0]) - 1
-	if fromIndex < 255 {
-		c.JSON(200, gin.H{"inbox": universes[uids[i]].Inboxes[fromIndex]})
-		return
-	}
-	c.JSON(200, gin.H{"inbox": "well..."})
-}
 
 func ToggleFollowPost(c *gin.Context) {
 	from := c.Request.Header["Username"]
@@ -69,13 +54,6 @@ func mapJsonBody(c *gin.Context) map[string]string {
 		m[k] = fmt.Sprintf("%v", v)
 	}
 	return m
-}
-
-type TimelineProfileWrapper struct {
-	Profile []Timeline `json:"profile"`
-}
-type TimelineInboxWrapper struct {
-	Inbox []Timeline `json:"inbox"`
 }
 
 type Timeline struct {
@@ -155,27 +133,6 @@ func TellOutAboutNewTimeline(t *Timeline, out string) {
 	os.Setenv("CLT_HOST", "")
 }
 
-func DisplayInboxTimelines(s string) {
-	var tw TimelineInboxWrapper
-	json.Unmarshal([]byte(s), &tw)
-	fmt.Println("Inbox")
-	for i, t := range tw.Inbox {
-		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
-			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
-		if i > 20 {
-			break
-		}
-	}
-}
-func DisplayProfileTimelines(s string) {
-	var tw TimelineProfileWrapper
-	json.Unmarshal([]byte(s), &tw)
-	fmt.Println("Profile")
-	for i, t := range tw.Profile {
-		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
-			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
-	}
-}
 func PostNewTimelineAs(text, username string) {
 	m := map[string]string{"text": text, "username": username}
 	asBytes, _ := json.Marshal(m)

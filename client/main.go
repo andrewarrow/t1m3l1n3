@@ -92,7 +92,7 @@ func main() {
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
-		network.DisplayInboxTimelines(s)
+		network.DisplayRecentTimelines(s)
 	} else if command == "universe" {
 		s := network.DoGet(fmt.Sprintf("universe"))
 		fmt.Println(s)
