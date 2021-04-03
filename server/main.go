@@ -23,6 +23,8 @@ func main() {
 	persist.Init()
 	cli.ReadInGlobalVars()
 
+	uidIndexString := persist.ReadFromFile("UNIVERSE_INDEX")
+
 	if len(cli.UniverseIds) == 0 {
 		if cli.ArgMap["universes"] == "" {
 			cli.ArgMap["universes"] = "6"
@@ -48,7 +50,7 @@ func main() {
 		}
 		c := make(chan bool, 1)
 		go network.BackgroundThread()
-		go network.Start(c, cli.ArgMap["port"], cli.ArgMap["host"])
+		go network.Start(c, uidIndexString, cli.ArgMap["port"], cli.ArgMap["host"])
 		<-c
 	} else if command == "config" {
 		network.NewUniverse()

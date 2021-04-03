@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,9 +13,14 @@ var universes map[string]*Universe = map[string]*Universe{}
 var maxUniverses byte
 var globalInOut *InOut
 
-func Start(c chan bool, port, host string) {
+func Start(c chan bool, uidIndexString, port, host string) {
 
 	fmt.Println("starting...")
+
+	if uidIndexString != "" {
+		b, _ := strconv.Atoi(uidIndexString)
+		uidIndex = byte(b)
+	}
 
 	r := gin.Default()
 	r.GET("/timelines", ShowRecent)

@@ -2,6 +2,9 @@ package network
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
+	"t1m3l1n3/persist"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,12 +38,18 @@ func PostNewAuth(name, pub string) map[string]interface{} {
 
 func CreateUserKey(c *gin.Context) {
 	m := mapJsonBody(c)
-	name := m["username"]
+	name := strings.TrimSpace(m["username"])
+	if len(name) < 2 || len(name) > 22 {
+		c.JSON(422, gin.H{"error": "username between 2 and 22"})
+		return
+	}
+
 	pub := m["pub"]
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	if universes[uids[uidIndex]].UserCount == maxUsersPerUniverse {
 		uidIndex++
+		persist.SaveToFile("UNIVERSE_INDEX", fmt.Sprintf("%d", uidIndex))
 	}
 	if len(universes[uids[uidIndex]].UsernameKeys[name]) == 0 {
 		universes[uids[uidIndex]].UsernameKeys[name] = []byte(pub)
