@@ -55,14 +55,14 @@ func DoHttpRead(verb, route string, client *http.Client, request *http.Request) 
 	return ""
 }
 
-func DoPost(route string, payload []byte) string {
+func DoPost(username, route string, payload []byte) string {
 	body := bytes.NewBuffer(payload)
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("POST", urlString, body)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("TLZ-Server", cli.Server)
 	request.Header.Set("TLZ-Index", cli.IndexString)
-	request.Header.Set("Username", cli.Username)
+	request.Header.Set("Username", username)
 	client := &http.Client{Timeout: time.Second * 50}
 
 	return DoHttpRead("POST", route, client, request)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"clt/cli"
 	"clt/keys"
 	"clt/network"
 	"encoding/json"
@@ -29,7 +28,7 @@ func main() {
 				m := map[string]string{}
 				m["text"] = thing
 				asBytes, _ := json.Marshal(m)
-				s := network.DoPost("score", asBytes)
+				s := network.DoPost("", "score", asBytes)
 				var mm map[string]interface{}
 				json.Unmarshal([]byte(s), &mm)
 				score := mm["score"].(map[string]interface{})
@@ -58,12 +57,18 @@ func main() {
 
 	bobPriv, bobPub := keys.KeyGen()
 	network.PostNewAuth("bob", bobPub)
+	suePriv, suePub := keys.KeyGen()
+	network.PostNewAuth("sue", suePub)
+	mikePriv, mikePub := keys.KeyGen()
+	network.PostNewAuth("mike", mikePub)
+	maryPriv, maryPub := keys.KeyGen()
+	network.PostNewAuth("mary", maryPub)
 
 	c := make(chan bool, 1)
 	go PostAs(bobPriv, "bob", vg_more_m)
-	//go PostAs(bobPriv, "sue", vg_more_f)
-	//go PostAs(bobPriv, "mike", lg_more_m)
-	//go PostAs(bobPriv, "mary", lg_more_f)
+	go PostAs(suePriv, "sue", vg_more_f)
+	go PostAs(mikePriv, "mike", lg_more_m)
+	go PostAs(maryPriv, "mary", lg_more_f)
 	<-c
 }
 
@@ -71,10 +76,9 @@ func PostAs(priv, name string, messages []string) {
 	for {
 		fmt.Println(name)
 
-		text := messages[0]
-		cli.Username = name
+		text := messages[rand.Intn(len(messages))]
 		s := keys.KeySign(priv, text)
-		network.PostNewTimeline(text, s)
+		network.PostNewTimeline(name, text, s)
 
 		time.Sleep(time.Second * 2)
 	}

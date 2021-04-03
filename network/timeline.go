@@ -151,7 +151,7 @@ func (t *Timeline) AddToUniverse(i byte) bool {
 func TellOutAboutNewTimeline(t *Timeline, out string) {
 	os.Setenv("CLT_HOST", fmt.Sprintf("http://%s/", out))
 	asBytes, _ := json.Marshal(t)
-	DoPost("timelines/notify", asBytes)
+	DoPost("", "timelines/notify", asBytes)
 	os.Setenv("CLT_HOST", "")
 }
 
@@ -179,10 +179,10 @@ func DisplayProfileTimelines(s string) {
 func PostNewTimelineAs(text, username string) {
 	m := map[string]string{"text": text, "username": username}
 	asBytes, _ := json.Marshal(m)
-	DoPost("timelines_as", asBytes)
+	DoPost("", "timelines_as", asBytes)
 }
-func PostNewTimeline(text, s string) {
+func PostNewTimeline(username, text, s string) {
 	m := map[string]string{"text": text, "s": s}
 	asBytes, _ := json.Marshal(m)
-	DoPost("timelines", asBytes)
+	DoPost(username, "timelines", asBytes)
 }

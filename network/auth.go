@@ -12,7 +12,7 @@ func Suggest(c *gin.Context) {
 }
 
 func SuggestNewPlaceToAuth() map[string]interface{} {
-	jsonString := DoPost("suggest", []byte{})
+	jsonString := DoPost("", "suggest", []byte{})
 	if jsonString == "" {
 		return map[string]interface{}{}
 	}
@@ -24,7 +24,7 @@ func SuggestNewPlaceToAuth() map[string]interface{} {
 func PostNewAuth(name, pub string) map[string]interface{} {
 	m := map[string]string{"username": name, "pub": pub}
 	asBytes, _ := json.Marshal(m)
-	jsonString := DoPost("auth", asBytes)
+	jsonString := DoPost("", "auth", asBytes)
 	if jsonString == "" {
 		return map[string]interface{}{}
 	}

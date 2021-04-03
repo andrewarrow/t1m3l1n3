@@ -63,7 +63,7 @@ func main() {
 		persist.SaveToFile("INDEX", cli.ArgMap["index"])
 	} else if command == "toggle" {
 		cli.EnsureParamPass("name")
-		s := network.DoPost(fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
+		s := network.DoPost("", fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
 		fmt.Println(s)
 	} else if command == "suggest" {
 		info := network.SuggestNewPlaceToAuth()
@@ -137,6 +137,6 @@ func main() {
 		cli.EnsureParamPass("text")
 		data := persist.ReadFromFile("PRIVATE_KEY")
 		s := keys.KeySign(data, cli.ArgMap["text"])
-		network.PostNewTimeline(cli.ArgMap["text"], s)
+		network.PostNewTimeline(cli.Username, cli.ArgMap["text"], s)
 	}
 }
