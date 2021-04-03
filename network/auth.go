@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 	"t1m3l1n3/persist"
 	"time"
@@ -39,6 +40,9 @@ func PostNewAuth(name, pub string) map[string]interface{} {
 func CreateUserKey(c *gin.Context) {
 	m := mapJsonBody(c)
 	name := strings.TrimSpace(m["username"])
+	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
+	name = reg.ReplaceAllString(name, "")
+
 	if len(name) < 2 || len(name) > 22 {
 		c.JSON(422, gin.H{"error": "username between 2 and 22"})
 		return
