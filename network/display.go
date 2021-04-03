@@ -16,14 +16,17 @@ type TimelineInboxWrapper struct {
 	Inbox []Timeline `json:"inbox"`
 }
 type TimelineRecentWrapper struct {
-	Recent []Timeline `json:"recent"`
+	Recent map[string][]Timeline `json:"recent"`
 }
 
 func ShowRecent(c *gin.Context) {
-	i := TlzIndex(c)
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
-	c.JSON(200, gin.H{"recent": universes[uids[i]].Recent})
+	m := map[string][]*Timeline{}
+	for k, v := range universes {
+		m[k] = v.Recent
+	}
+	c.JSON(200, gin.H{"recent": m})
 }
 func ShowInbox(c *gin.Context) {
 	i := TlzIndex(c)
@@ -42,11 +45,13 @@ func DisplayRecentTimelines(s string) {
 	var tw TimelineRecentWrapper
 	json.Unmarshal([]byte(s), &tw)
 	fmt.Println("Recent")
-	for i, t := range tw.Recent {
-		fmt.Printf("%02d. %20s %20s %s\n", i+1, t.From,
-			timeago.FromDuration(time.Since(t.AsTime())), t.Text)
-		if i > 20 {
-			break
+	for uid, list := range tw.Recent {
+		for i, t := range list {
+			fmt.Printf("%02d. %s %20s %20s %s\n", i+1, uid, t.From,
+				timeago.FromDuration(time.Since(t.AsTime())), t.Text)
+			if i > 20 {
+				break
+			}
 		}
 	}
 }
