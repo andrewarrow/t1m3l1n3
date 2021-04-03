@@ -1,6 +1,8 @@
 package main
 
 import (
+	"clt/cli"
+	"clt/keys"
 	"clt/network"
 	"encoding/json"
 	"fmt"
@@ -54,17 +56,26 @@ func main() {
 		}
 	}
 
+	bobPriv, bobPub := keys.KeyGen()
+	network.PostNewAuth("bob", bobPub)
+
 	c := make(chan bool, 1)
-	go PostAs("bob", vg_more_m)
-	go PostAs("sue", vg_more_f)
-	go PostAs("mike", lg_more_m)
-	go PostAs("mary", lg_more_f)
+	go PostAs(bobPriv, "bob", vg_more_m)
+	//go PostAs(bobPriv, "sue", vg_more_f)
+	//go PostAs(bobPriv, "mike", lg_more_m)
+	//go PostAs(bobPriv, "mary", lg_more_f)
 	<-c
 }
 
-func PostAs(name string, messages []string) {
+func PostAs(priv, name string, messages []string) {
 	for {
 		fmt.Println(name)
-		time.Sleep(time.Second * 10)
+
+		text := messages[0]
+		cli.Username = name
+		s := keys.KeySign(priv, text)
+		network.PostNewTimeline(text, s)
+
+		time.Sleep(time.Second * 2)
 	}
 }

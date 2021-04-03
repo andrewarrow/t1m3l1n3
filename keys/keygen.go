@@ -59,7 +59,8 @@ func DoTestSignAndVerify() {
 	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
 	publicKey := genericPublicKey.(*rsa.PublicKey)
 
-	s := KeySign(msg)
+	data := persist.ReadFromFile("PRIVATE_KEY")
+	s := KeySign(data, msg)
 
 	msgHash := sha256.New()
 	msgHash.Write([]byte(msg))

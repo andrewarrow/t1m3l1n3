@@ -1,7 +1,6 @@
 package keys
 
 import (
-	"clt/persist"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
@@ -12,12 +11,11 @@ import (
 	"fmt"
 )
 
-func KeySign(msg string) string {
+func KeySign(data, msg string) string {
 	msgHash := sha256.New()
 	msgHash.Write([]byte(msg))
 	msgHashSum := msgHash.Sum(nil)
 
-	data := persist.ReadFromFile("PRIVATE_KEY")
 	block, _ := pem.Decode([]byte(data))
 	privateKey, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
 	signature, err := rsa.SignPSS(rand.Reader, privateKey, crypto.SHA256, msgHashSum, nil)

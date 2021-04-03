@@ -87,7 +87,8 @@ func main() {
 	} else if command == "verify" {
 		keys.DoTestSignAndVerify()
 	} else if command == "sign" {
-		keys.KeySign("test")
+		data := persist.ReadFromFile("PRIVATE_KEY")
+		keys.KeySign(data, "test")
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
@@ -134,7 +135,8 @@ func main() {
 		}
 	} else if command == "post" {
 		cli.EnsureParamPass("text")
-		s := keys.KeySign(cli.ArgMap["text"])
+		data := persist.ReadFromFile("PRIVATE_KEY")
+		s := keys.KeySign(data, cli.ArgMap["text"])
 		network.PostNewTimeline(cli.ArgMap["text"], s)
 	}
 }
