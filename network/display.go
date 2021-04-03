@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +48,8 @@ func DisplayRecentTimelines(s string) {
 	fmt.Println("Recent")
 	for uid, list := range tw.Recent {
 		for i, t := range list {
-			fmt.Printf("%02d. %s %20s %20s %s\n", i+1, uid, t.From,
+			tokens := strings.Split(uid, "-")
+			fmt.Printf("%02d. %20s %20s %s\n", i+1, tokens[1]+"-"+t.From,
 				timeago.FromDuration(time.Since(t.AsTime())), t.Text)
 			if i > 20 {
 				break

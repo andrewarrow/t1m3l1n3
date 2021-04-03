@@ -91,7 +91,7 @@ func main() {
 		keys.KeySign(data, "test")
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
-		fmt.Println(s)
+		//fmt.Println(s)
 		network.DisplayRecentTimelines(s)
 	} else if command == "universe" {
 		s := network.DoGet(fmt.Sprintf("universe"))
