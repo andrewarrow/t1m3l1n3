@@ -109,10 +109,10 @@ func main() {
 		auth := network.PostNewAuth(cli.ArgMap["name"], pub)
 		if auth["user_created"].(bool) {
 			s := auth["server"].(string)
-			i := byte(auth["index"].(float64))
+			uid := auth["universe_id"].(string)
 			persist.SaveToFile("USERNAME", cli.ArgMap["name"])
 			persist.SaveToFile("SERVER", s)
-			persist.SaveToFile("INDEX", fmt.Sprintf("%d", i))
+			persist.SaveToFile("UNIVERSE", uid)
 			fmt.Println("Ok you are now:", cli.ArgMap["name"])
 		} else {
 			fmt.Println("This username already taken!")
@@ -136,7 +136,8 @@ func main() {
 	} else if command == "post" {
 		cli.EnsureParamPass("text")
 		data := persist.ReadFromFile("PRIVATE_KEY")
+		uid := persist.ReadFromFile("UNIVERSE")
 		s := keys.KeySign(data, cli.ArgMap["text"])
-		network.PostNewTimeline("", cli.Username, cli.ArgMap["text"], s)
+		network.PostNewTimeline(uid, cli.Username, cli.ArgMap["text"], s)
 	}
 }
