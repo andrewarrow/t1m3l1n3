@@ -11,12 +11,11 @@ func CreateTimelineAs(c *gin.Context) {
 	t := Timeline{}
 	t.Text = m["text"]
 	t.From = m["username"]
-	i := TlzIndex(c)
 
 	t.PostedAt = time.Now().Unix()
 	t.Origin = globalInOut.Name
 
-	if t.AddToUniverse(i) == true {
+	if t.AddToUniverse("") == true {
 		c.JSON(200, gin.H{"ok": true})
 		return
 	}

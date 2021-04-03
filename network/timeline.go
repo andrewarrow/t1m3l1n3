@@ -91,12 +91,13 @@ func CreateTimeline(c *gin.Context) {
 	t := Timeline{}
 	t.Text = m["text"]
 	t.From = c.Request.Header["Username"][0]
-	i := TlzIndex(c)
+	fmt.Println(c.Request.Header)
+	uid := c.Request.Header["Universe"][0]
 	s := m["s"]
 	sDec, _ := b64.StdEncoding.DecodeString(s)
 
 	UniverseLock.Lock()
-	pubKey := universes[uids[i]].UsernameKeys[t.From]
+	pubKey := universes[uid].UsernameKeys[t.From]
 	UniverseLock.Unlock()
 	if keys.VerifySig(pubKey, t.Text, sDec) == false {
 		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
@@ -106,7 +107,7 @@ func CreateTimeline(c *gin.Context) {
 	t.PostedAt = time.Now().Unix()
 	t.Origin = globalInOut.Name
 
-	if t.AddToUniverse(i) == true {
+	if t.AddToUniverse(uid) == true {
 		//TellOutAboutNewTimeline(&t, globalInOut.Out)
 		c.JSON(200, gin.H{"ok": true})
 		return
@@ -114,10 +115,10 @@ func CreateTimeline(c *gin.Context) {
 	c.JSON(422, gin.H{"ok": false})
 }
 
-func (t *Timeline) AddToUniverse(i byte) bool {
+func (t *Timeline) AddToUniverse(uid string) bool {
 	val := true
 	UniverseLock.Lock()
-	val = universes[uids[i]].BroadcastNewTimeline(t)
+	val = universes[uid].BroadcastNewTimeline(t)
 	UniverseLock.Unlock()
 	if val {
 		fmt.Println("Add User or Existing User")

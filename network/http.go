@@ -63,7 +63,7 @@ func DoPost(uid, username, route string, payload []byte) string {
 	request.Header.Set("TLZ-Server", cli.Server)
 	request.Header.Set("TLZ-Index", cli.IndexString)
 	request.Header.Set("Username", username)
-	request.Header.Set("UniverseId", uid)
+	request.Header.Set("Universe", uid)
 	client := &http.Client{Timeout: time.Second * 50}
 
 	return DoHttpRead("POST", route, client, request)

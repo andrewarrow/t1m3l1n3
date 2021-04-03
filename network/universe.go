@@ -138,21 +138,17 @@ func (u *Universe) MakeStats() map[string]interface{} {
 	return m
 }
 func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
-	fromIndex := u.UsernameToIndex(t.From) - 1
-	if fromIndex == 255 {
-		// no more room
-		return false
-	}
 	u.Recent = append([]*Timeline{t}, u.Recent...)
 	if len(u.Recent) > 100 {
 		u.Recent = u.Recent[0:100]
 	}
-	u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
-	for i := byte(0); i < maxUsersPerUniverse; i++ {
-		if u.ShouldDeliverFrom(fromIndex, i) {
-			u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
-		}
-	}
+	/*
+		u.Profile[fromIndex] = append([]*Timeline{t}, u.Profile[fromIndex]...)
+			for i := byte(0); i < maxUsersPerUniverse; i++ {
+				if u.ShouldDeliverFrom(fromIndex, i) {
+					u.Inboxes[i] = append([]*Timeline{t}, u.Inboxes[i]...)
+				}
+			}*/
 	return true
 }
 
