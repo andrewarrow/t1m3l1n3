@@ -7,7 +7,7 @@ import (
 )
 
 type Message struct {
-	Text string
+	Text string `json:"text"`
 }
 
 func AsciiByteToBase9(a string) byte {
@@ -30,13 +30,13 @@ func AsciiByteToBase9(a string) byte {
 
 type MessageScore struct {
 	M             *Message
-	PercentM      float64
-	PercentF      float64
-	PercentG      float64
-	LongestRun    int
-	LongestFlavor string
-	Switches      int
-	Joined        string
+	PercentM      float64 `json:"percent_m"`
+	PercentF      float64 `json:"percent_f"`
+	PercentG      float64 `json:"percent_g"`
+	LongestRun    int     `json:"longest_run"`
+	LongestFlavor string  `json:"longest_flavor"`
+	Switches      int     `json:"switches"`
+	Joined        string  `json:"joined"`
 }
 
 func (m *Message) Score() *MessageScore {

@@ -33,7 +33,7 @@ forever more this node will give you and your private key the right
 to post as you.
 
 But this is just one node, and this code is open source. Anyone
-can start a new node where the same username you just picked can
+can start a new node with the same username you just picked can
 be given to someone else.
 
 Universes are chained together. And just like the blockchain, you 
