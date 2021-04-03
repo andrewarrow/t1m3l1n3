@@ -2,6 +2,7 @@ package main
 
 import (
 	"clt/cli"
+	"clt/keys"
 	"clt/network"
 	"clt/persist"
 	"fmt"
@@ -41,8 +42,8 @@ func main() {
 	command := os.Args[1]
 
 	if persist.ReadFromFile("PUBLIC_KEY") == "" {
-		priv, pub := KeyGen()
-		KeyGenSave(priv, pub)
+		priv, pub := keys.KeyGen()
+		keys.KeyGenSave(priv, pub)
 	}
 
 	if command == "profile" {
@@ -77,16 +78,16 @@ func main() {
 		}
 	} else if command == "keygen" {
 		cli.EnsureParamPass("overwrite")
-		priv, pub := KeyGen()
-		KeyGenSave(priv, pub)
+		priv, pub := keys.KeyGen()
+		keys.KeyGenSave(priv, pub)
 	} else if command == "idplease" {
 		s := persist.ReadFromFile("SERVER")
 		i := persist.ReadFromFile("INDEX")
 		fmt.Println(s, i)
 	} else if command == "verify" {
-		DoTestSignAndVerify()
+		keys.DoTestSignAndVerify()
 	} else if command == "sign" {
-		KeySign("test")
+		keys.KeySign("test")
 	} else if command == "ls" {
 		s := network.DoGet(fmt.Sprintf("timelines"))
 		//fmt.Println(s)
@@ -133,7 +134,7 @@ func main() {
 		}
 	} else if command == "post" {
 		cli.EnsureParamPass("text")
-		s := KeySign(cli.ArgMap["text"])
+		s := keys.KeySign(cli.ArgMap["text"])
 		network.PostNewTimeline(cli.ArgMap["text"], s)
 	}
 }
