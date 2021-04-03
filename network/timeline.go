@@ -1,13 +1,9 @@
 package network
 
 import (
-	"crypto"
-	"crypto/rsa"
-	"crypto/sha256"
-	"crypto/x509"
+	"clt/keys"
 	b64 "encoding/base64"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -112,26 +108,6 @@ func NotifyTimeline(c *gin.Context) {
 	//t.AddToByKey()
 }
 
-func VerifySig(i byte, msg, from string, s []byte) bool {
-	UniverseLock.Lock()
-	pubKey := universes[uids[i]].UsernameKeys[from]
-	UniverseLock.Unlock()
-	if len(pubKey) == 0 {
-		return false
-	}
-	blockPub, _ := pem.Decode(pubKey)
-	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
-	publicKey := genericPublicKey.(*rsa.PublicKey)
-
-	msgHash := sha256.New()
-	msgHash.Write([]byte(msg))
-	msgHashSum := msgHash.Sum(nil)
-
-	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, s, nil)
-	fmt.Println(valid)
-	return valid == nil
-}
-
 func CreateTimeline(c *gin.Context) {
 	m := mapJsonBody(c)
 	t := Timeline{}
@@ -141,7 +117,10 @@ func CreateTimeline(c *gin.Context) {
 	s := m["s"]
 	sDec, _ := b64.StdEncoding.DecodeString(s)
 
-	if VerifySig(i, t.Text, t.From, sDec) == false {
+	UniverseLock.Lock()
+	pubKey := universes[uids[i]].UsernameKeys[t.From]
+	UniverseLock.Unlock()
+	if keys.VerifySig(pubKey, t.Text, sDec) == false {
 		c.JSON(422, gin.H{"ok": false, "sig": "failed"})
 		return
 	}

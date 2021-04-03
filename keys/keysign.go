@@ -29,3 +29,20 @@ func KeySign(msg string) string {
 
 	return b64.StdEncoding.EncodeToString(signature)
 }
+
+func VerifySig(pubKey []byte, msg string, s []byte) bool {
+	if len(pubKey) == 0 {
+		return false
+	}
+	blockPub, _ := pem.Decode(pubKey)
+	genericPublicKey, _ := x509.ParsePKIXPublicKey(blockPub.Bytes)
+	publicKey := genericPublicKey.(*rsa.PublicKey)
+
+	msgHash := sha256.New()
+	msgHash.Write([]byte(msg))
+	msgHashSum := msgHash.Sum(nil)
+
+	valid := rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, s, nil)
+	fmt.Println(valid)
+	return valid == nil
+}
