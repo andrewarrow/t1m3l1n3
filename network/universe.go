@@ -7,6 +7,7 @@ import (
 	"log"
 	"strconv"
 	"t1m3l1n3/cli"
+	"t1m3l1n3/keys"
 	"t1m3l1n3/persist"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,21 @@ type Universe struct {
 	Id            string
 	UpPeers       []string
 	DownPeers     []string
+	Block         map[string]map[string]string
+}
+
+func (u *Universe) ToggleFollow(sig, from string, other *Universe, to string) string {
+	pub := u.UsernameKeys[from]
+	sDec, _ := b64.StdEncoding.DecodeString(sig)
+
+	if keys.VerifySig(pub, from, sDec) == false {
+		return "fail"
+	}
+	if u.Block[other.Id] == nil {
+		u.Block[other.Id] = map[string]string{}
+	}
+	u.Block[other.Id][from] = to
+	return ""
 }
 
 func MakeUniverses(s string) []string {
@@ -152,12 +168,6 @@ func (u *Universe) BroadcastNewTimeline(t *Timeline) bool {
 	return true
 }
 
-func (u *Universe) ToggleFollow(to, from string) string {
-	toIndex := u.UsernameToIndex(to) - 1
-	fromIndex := u.UsernameToIndex(from) - 1
-	u.Following[toIndex] = uint64(Bits(u.Following[toIndex]) ^ LookupBit(fromIndex))
-	return fmt.Sprintf("%b", u.Following[toIndex])
-}
 func (u *Universe) ShouldDeliverFrom(from, to byte) bool {
 	log.Println("  ShouldDeliverFrom", from)
 	return HasBits(Bits(u.Following[to]), LookupBit(from))
@@ -190,6 +200,7 @@ func NewUniverse() *Universe {
 	u.UserCreatedAt = map[string]int64{}
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}
+	u.Block = map[string]map[string]string{}
 
 	for i := 0; i < maxUsersPerUniverse; i++ {
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)

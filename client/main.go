@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"t1m3l1n3/cli"
 	"t1m3l1n3/keys"
 	"t1m3l1n3/network"
@@ -63,7 +65,15 @@ func main() {
 		persist.SaveToFile("INDEX", cli.ArgMap["index"])
 	} else if command == "toggle" {
 		cli.EnsureParamPass("name")
-		s := network.DoPost("", "", fmt.Sprintf("follow/%s", cli.ArgMap["name"]), []byte{})
+		data := persist.ReadFromFile("PRIVATE_KEY")
+		sig := keys.KeySign(data, cli.Username)
+		tokens := strings.Split(cli.ArgMap["name"], "-")
+		prefix := tokens[0]
+		to := tokens[1]
+		asBytes, _ := json.Marshal(map[string]string{"from": cli.Username,
+			"prefix": prefix})
+		uid := persist.ReadFromFile("UNIVERSE")
+		s := network.DoPost(uid, sig, fmt.Sprintf("follow/%s", to), asBytes)
 		fmt.Println(s)
 	} else if command == "suggest" {
 		info := network.SuggestNewPlaceToAuth()

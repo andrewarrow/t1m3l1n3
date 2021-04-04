@@ -14,15 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ToggleFollowPost(c *gin.Context) {
-	from := c.Request.Header["Username"]
-	to := c.Param("username")
-	UniverseLock.Lock()
-	bin := universes[uids[uidIndex]].ToggleFollow(from[0], to)
-	c.JSON(200, gin.H{"mask": bin})
-	UniverseLock.Unlock()
-}
-
 func TlzIndex(c *gin.Context) byte {
 	index := c.Request.Header["Tlz-Index"]
 	i, _ := strconv.Atoi(index[0])
