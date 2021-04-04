@@ -21,11 +21,26 @@ type TimelineRecentWrapper struct {
 }
 
 func ShowRecent(c *gin.Context) {
+	me := c.Request.Header["Username"][0]
+	uid := c.Request.Header["Universe"][0]
+	m := map[string][]*Timeline{}
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
-	m := map[string][]*Timeline{}
 	for k, v := range universes {
-		m[k] = v.Recent
+
+		buff := []*Timeline{}
+
+		for _, r := range v.Recent {
+
+			if universes[uid].Block[k] != nil {
+				for _, v := range universes[uid].Block[k].Thing {
+					if v.Thing[me] == nil || v.Thing[me].Thing == false {
+						buff = append(buff, r)
+					}
+				}
+			}
+		}
+		m[k] = buff
 	}
 	c.JSON(200, gin.H{"recent": m})
 }

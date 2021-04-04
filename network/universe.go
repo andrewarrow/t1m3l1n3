@@ -7,11 +7,20 @@ import (
 	"log"
 	"strconv"
 	"t1m3l1n3/cli"
-	"t1m3l1n3/keys"
 	"t1m3l1n3/persist"
 
 	"github.com/gin-gonic/gin"
 )
+
+type LastBlockThing struct {
+	Thing bool
+}
+type OtherBlockThing struct {
+	Thing map[string]*LastBlockThing
+}
+type BlockThing struct {
+	Thing map[string]*OtherBlockThing
+}
 
 type Universe struct {
 	Following     []uint64
@@ -25,21 +34,7 @@ type Universe struct {
 	Id            string
 	UpPeers       []string
 	DownPeers     []string
-	Block         map[string]map[string]string
-}
-
-func (u *Universe) ToggleFollow(sig, from string, other *Universe, to string) string {
-	pub := u.UsernameKeys[from]
-	sDec, _ := b64.StdEncoding.DecodeString(sig)
-
-	if keys.VerifySig(pub, from, sDec) == false {
-		return "fail"
-	}
-	if u.Block[other.Id] == nil {
-		u.Block[other.Id] = map[string]string{}
-	}
-	u.Block[other.Id][from] = to
-	return ""
+	Block         map[string]*BlockThing
 }
 
 func MakeUniverses(s string) []string {
@@ -200,7 +195,7 @@ func NewUniverse() *Universe {
 	u.UserCreatedAt = map[string]int64{}
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}
-	u.Block = map[string]map[string]string{}
+	u.Block = map[string]*BlockThing{}
 
 	for i := 0; i < maxUsersPerUniverse; i++ {
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)
