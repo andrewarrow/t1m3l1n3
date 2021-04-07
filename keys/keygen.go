@@ -30,13 +30,13 @@ func KeyGen() (string, string) {
 
 	return string(pemEncoded), string(pemEncodedPub)
 }
-func KeyGenSave(priv, pub string) {
+func KeyGenSave(priv, pub, suffix string) {
 	location := persist.UserHomeDir()
-	persist.SaveToFile("PRIVATE_KEY", priv)
-	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"))
+	persist.SaveToFile("PRIVATE_KEY"+suffix, priv)
+	fmt.Println("Private Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PRIVATE_KEY"+suffix))
 
-	persist.SaveToFile("PUBLIC_KEY", pub)
-	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"))
+	persist.SaveToFile("PUBLIC_KEY"+suffix, pub)
+	fmt.Println("Public Key Saved To: ", fmt.Sprintf("%s/%s/%s", location, persist.DIRNAME, "PUBLIC_KEY"+suffix))
 
 	fmt.Printf("\n\n")
 	fmt.Printf("-------------------\n")

@@ -45,7 +45,11 @@ func main() {
 
 	if persist.ReadFromFile("PUBLIC_KEY") == "" {
 		priv, pub := keys.KeyGen()
-		keys.KeyGenSave(priv, pub)
+		keys.KeyGenSave(priv, pub, "")
+	}
+	if persist.ReadFromFile("PUBLIC_KEY2") == "" {
+		priv, pub := keys.KeyGen()
+		keys.KeyGenSave(priv, pub, "2")
 	}
 
 	if command == "profile" {
@@ -89,7 +93,7 @@ func main() {
 	} else if command == "keygen" {
 		cli.EnsureParamPass("overwrite")
 		priv, pub := keys.KeyGen()
-		keys.KeyGenSave(priv, pub)
+		keys.KeyGenSave(priv, pub, "")
 	} else if command == "idplease" {
 		s := persist.ReadFromFile("SERVER")
 		i := persist.ReadFromFile("INDEX")
@@ -169,7 +173,13 @@ func main() {
 		cli.EnsureParamPass("text")
 		data := persist.ReadFromFile("PRIVATE_KEY")
 		uid := persist.ReadFromFile("UNIVERSE")
+		username := persist.ReadFromFile("USERNAME")
+		if cli.ArgMap["spot"] == "2" {
+			uid = persist.ReadFromFile("UNIVERSE2")
+			data = persist.ReadFromFile("PRIVATE_KEY2")
+			username = persist.ReadFromFile("USERNAME2")
+		}
 		s := keys.KeySign(data, cli.ArgMap["text"])
-		network.PostNewTimeline(uid, cli.Username, cli.ArgMap["text"], s)
+		network.PostNewTimeline(uid, username, cli.ArgMap["text"], s)
 	}
 }
