@@ -38,9 +38,12 @@ func (u *Universe) ToggleFollow(sig, from string, other *Universe, to string) st
 		u.Block[other.Id].Thing = map[string]*OtherBlockThing{}
 	}
 	if u.Block[other.Id].Thing[from] == nil {
-		u.Block[other.Id].Thing[from].Thing = map[string]*LastBlockThing{}
+		u.Block[other.Id].Thing[from] = &OtherBlockThing{}
 	}
 	foo := u.Block[other.Id]
+	if foo.Thing[from].Thing == nil {
+		foo.Thing[from].Thing = map[string]*LastBlockThing{}
+	}
 	if foo.Thing[from].Thing[to] == nil {
 		foo.Thing[from].Thing[to] = &LastBlockThing{}
 	}
