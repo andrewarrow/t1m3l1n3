@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
+	"strings"
 	"t1m3l1n3/keys"
 	"t1m3l1n3/network"
 	"time"
@@ -28,6 +30,16 @@ func main() {
 	s := network.DoGet(bobUid, "bob", fmt.Sprintf("timelines"))
 	fmt.Println(s)
 	s = network.DoGet(sueUid, "sue", fmt.Sprintf("timelines"))
+	fmt.Println(s)
+
+	tokens := strings.Split(sueUid, "-")
+	prefix := tokens[1]
+
+	sig = keys.KeySign(bobPriv, "bob")
+	asBytes, _ := json.Marshal(map[string]string{"from": "bob",
+		"to":     "sue",
+		"prefix": prefix})
+	s = network.DoPost(bobUid, sig, fmt.Sprintf("toggle"), asBytes)
 	fmt.Println(s)
 	//network.DisplayRecentTimelines(uid, username, s)
 }

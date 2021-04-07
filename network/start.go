@@ -28,7 +28,7 @@ func Start(c chan bool, uidIndexString, port, host string) {
 	r.POST("/timelines", CreateTimeline)
 	r.POST("/timelines_as", CreateTimelineAs)
 	r.POST("/timelines/notify", NotifyTimeline)
-	r.POST("/follow/:username", ToggleFollowPost)
+	r.POST("/toggle", ToggleFollowPost)
 	r.GET("/universe", ShowUniverse)
 	r.POST("/auth", CreateUserKey)
 	r.GET("/idplease", IdPlease)

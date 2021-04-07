@@ -9,9 +9,10 @@ import (
 
 func ToggleFollowPost(c *gin.Context) {
 	m := mapJsonBody(c)
-	sig := c.Request.Header["Username"]
-	uid := c.Request.Header["Universe"]
-	to := c.Param("username")
+	sig := c.Request.Header["Username"][0]
+	from := m["from"]
+	uid := c.Request.Header["Universe"][0]
+	to := m["to"]
 	prefix := m["prefix"]
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
@@ -20,7 +21,7 @@ func ToggleFollowPost(c *gin.Context) {
 		c.JSON(401, gin.H{"": ""})
 		return
 	}
-	universes[uid[0]].ToggleFollow(sig[0], m["from"], u, to)
+	universes[uid].ToggleFollow(sig, from, u, to)
 	c.JSON(200, gin.H{"": ""})
 }
 
