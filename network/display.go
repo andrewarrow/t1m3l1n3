@@ -38,6 +38,8 @@ func ShowRecent(c *gin.Context) {
 						buff = append(buff, r)
 					}
 				}
+			} else {
+				buff = append(buff, r)
 			}
 		}
 		m[k] = buff
