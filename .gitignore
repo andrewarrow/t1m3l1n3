@@ -1,5 +1,6 @@
 clt
 testing/messages/messages
+testing/toggle/toggle
 vendor
 go.sum
 client/client
