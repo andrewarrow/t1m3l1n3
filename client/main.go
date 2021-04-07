@@ -53,11 +53,11 @@ func main() {
 		if cli.ArgMap["name"] != "" {
 			username = cli.ArgMap["name"]
 		}
-		s := network.DoGet(fmt.Sprintf("timelines/%s", username))
+		s := network.DoGet("", "", fmt.Sprintf("timelines/%s", username))
 		//fmt.Println(s)
 		network.DisplayProfileTimelines(s)
 	} else if command == "taken" {
-		s := network.DoGet(fmt.Sprintf("taken"))
+		s := network.DoGet("", "", fmt.Sprintf("taken"))
 		fmt.Println(s)
 	} else if command == "change" {
 		cli.EnsureParamPass("server", "index")
@@ -100,14 +100,20 @@ func main() {
 		data := persist.ReadFromFile("PRIVATE_KEY")
 		keys.KeySign(data, "test")
 	} else if command == "ls" {
-		s := network.DoGet(fmt.Sprintf("timelines"))
+		uid := persist.ReadFromFile("UNIVERSE")
+		if uid == "" {
+			fmt.Println("run client auth --name=me first")
+			return
+		}
+		username := persist.ReadFromFile("USERNAME")
+		s := network.DoGet(uid, username, fmt.Sprintf("timelines"))
 		//fmt.Println(s)
 		network.DisplayRecentTimelines(s)
 	} else if command == "universe" {
-		s := network.DoGet(fmt.Sprintf("universe"))
+		s := network.DoGet("", "", fmt.Sprintf("universe"))
 		fmt.Println(s)
 	} else if command == "servers" {
-		s := network.DoGet("servers")
+		s := network.DoGet("", "", "servers")
 		fmt.Println(s)
 	} else if command == "auth" {
 		if cli.ArgMap["clear"] == "true" {

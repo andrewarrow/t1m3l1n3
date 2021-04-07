@@ -18,7 +18,7 @@ func BaseUrl() string {
 	return url
 }
 
-func DoGet(route string) string {
+func DoGet(uid, username, route string) string {
 	agent := "agent"
 
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
@@ -27,6 +27,8 @@ func DoGet(route string) string {
 	request.Header.Set("Username", cli.Username)
 	request.Header.Set("Tlz-Server", cli.Server)
 	request.Header.Set("Tlz-Index", cli.IndexString)
+	request.Header.Set("Username", username)
+	request.Header.Set("Universe", uid)
 	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Timeout: time.Second * 500}
 	return DoHttpRead("GET", route, client, request)
