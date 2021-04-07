@@ -106,15 +106,31 @@ func main() {
 			return
 		}
 		username := persist.ReadFromFile("USERNAME")
+		if cli.ArgMap["spot"] == "2" {
+			uid = persist.ReadFromFile("UNIVERSE2")
+			username = persist.ReadFromFile("USERNAME2")
+		}
 		s := network.DoGet(uid, username, fmt.Sprintf("timelines"))
 		//fmt.Println(s)
-		network.DisplayRecentTimelines(s)
+		network.DisplayRecentTimelines(uid, username, s)
 	} else if command == "universe" {
 		s := network.DoGet("", "", fmt.Sprintf("universe"))
 		fmt.Println(s)
 	} else if command == "servers" {
 		s := network.DoGet("", "", "servers")
 		fmt.Println(s)
+	} else if command == "auth2" {
+		cli.EnsureParamPass("name")
+		pub := persist.ReadFromFile("PUBLIC_KEY2")
+		auth := network.PostNewAuth(cli.ArgMap["name"], pub)
+		if auth["user_created"].(bool) {
+			uid := auth["universe_id"].(string)
+			persist.SaveToFile("USERNAME2", cli.ArgMap["name"])
+			persist.SaveToFile("UNIVERSE2", uid)
+			fmt.Println("Ok you are now:", cli.ArgMap["name"], "in spot2")
+		} else {
+			fmt.Println("This username already taken!")
+		}
 	} else if command == "auth" {
 		if cli.ArgMap["clear"] == "true" {
 			persist.RemoveList(persist.AllFiles())

@@ -59,10 +59,10 @@ func ShowInbox(c *gin.Context) {
 	c.JSON(200, gin.H{"inbox": "well..."})
 }
 
-func DisplayRecentTimelines(s string) {
+func DisplayRecentTimelines(uid, username, s string) {
 	var tw TimelineRecentWrapper
 	json.Unmarshal([]byte(s), &tw)
-	fmt.Println("Recent")
+	fmt.Println("Recent", uid, username)
 	for uid, list := range tw.Recent {
 		for i, t := range list {
 			tokens := strings.Split(uid, "-")
