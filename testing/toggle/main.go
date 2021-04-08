@@ -28,9 +28,11 @@ func main() {
 	network.PostNewTimeline(sueUid, "sue", text, sig)
 
 	s := network.DoGet(bobUid, "bob", fmt.Sprintf("timelines"))
-	fmt.Println(s)
+	//fmt.Println(s)
+	network.DisplayRecentTimelines(bobUid, "bob", s)
 	s = network.DoGet(sueUid, "sue", fmt.Sprintf("timelines"))
-	fmt.Println(s)
+	//fmt.Println(s)
+	network.DisplayRecentTimelines(sueUid, "sue", s)
 
 	tokens := strings.Split(sueUid, "-")
 	prefix := tokens[1]
@@ -43,7 +45,9 @@ func main() {
 	fmt.Println(s)
 	//network.DisplayRecentTimelines(uid, username, s)
 	s = network.DoGet(bobUid, "bob", fmt.Sprintf("timelines"))
-	fmt.Println(s)
+	//fmt.Println(s)
+	network.DisplayRecentTimelines(bobUid, "bob", s)
 	s = network.DoGet(sueUid, "sue", fmt.Sprintf("timelines"))
-	fmt.Println(s)
+	//fmt.Println(s)
+	network.DisplayRecentTimelines(sueUid, "sue", s)
 }
