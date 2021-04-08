@@ -2,6 +2,7 @@ package network
 
 import (
 	b64 "encoding/base64"
+	"fmt"
 	"t1m3l1n3/keys"
 
 	"github.com/gin-gonic/gin"
@@ -32,22 +33,23 @@ func (u *Universe) ToggleFollow(sig, from string, other *Universe, to string) st
 	if keys.VerifySig(pub, from, sDec) == false {
 		return "fail"
 	}
+	fmt.Printf("ToggleFollow from %s to %s \n %s \n %s \n", from, to, u.Id, other.Id)
 	if u.Block[other.Id] == nil {
 		u.Block[other.Id] = &BlockThing{}
 	}
 	if u.Block[other.Id].Thing == nil {
 		u.Block[other.Id].Thing = map[string]*OtherBlockThing{}
 	}
-	if u.Block[other.Id].Thing[from] == nil {
-		u.Block[other.Id].Thing[from] = &OtherBlockThing{}
+	if u.Block[other.Id].Thing[to] == nil {
+		u.Block[other.Id].Thing[to] = &OtherBlockThing{}
 	}
 	foo := u.Block[other.Id]
-	if foo.Thing[from].Thing == nil {
-		foo.Thing[from].Thing = map[string]*LastBlockThing{}
+	if foo.Thing[to].Thing == nil {
+		foo.Thing[to].Thing = map[string]*LastBlockThing{}
 	}
-	if foo.Thing[from].Thing[to] == nil {
-		foo.Thing[from].Thing[to] = &LastBlockThing{}
+	if foo.Thing[to].Thing[from] == nil {
+		foo.Thing[to].Thing[from] = &LastBlockThing{}
 	}
-	foo.Thing[from].Thing[to].Thing = !foo.Thing[from].Thing[to].Thing
+	foo.Thing[to].Thing[from].Thing = !foo.Thing[to].Thing[from].Thing
 	return ""
 }

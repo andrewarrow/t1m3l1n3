@@ -75,9 +75,10 @@ func main() {
 		prefix := tokens[0]
 		to := tokens[1]
 		asBytes, _ := json.Marshal(map[string]string{"from": cli.Username,
+			"to":     to,
 			"prefix": prefix})
 		uid := persist.ReadFromFile("UNIVERSE")
-		s := network.DoPost(uid, sig, fmt.Sprintf("follow/%s", to), asBytes)
+		s := network.DoPost(uid, sig, fmt.Sprintf("toggle"), asBytes)
 		fmt.Println(s)
 	} else if command == "suggest" {
 		info := network.SuggestNewPlaceToAuth()

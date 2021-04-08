@@ -27,18 +27,25 @@ func ShowRecent(c *gin.Context) {
 	UniverseLock.Lock()
 	defer UniverseLock.Unlock()
 	for k, v := range universes {
+		fmt.Printf("on %s\n", k)
 
 		buff := []*Timeline{}
 
-		for _, r := range v.Recent {
+		fmt.Printf("len %d\n", len(v.Recent))
+		for i, r := range v.Recent {
 
+			fmt.Printf("on %d\n", i)
 			if universes[uid].Block[k] != nil {
-				for _, v := range universes[uid].Block[k].Thing {
+				fmt.Printf("IN on %d\n", i)
+				for j, v := range universes[uid].Block[k].Thing {
+					fmt.Printf("  IN on %s %s\n", j, me)
 					if v.Thing[me] == nil || v.Thing[me].Thing == false {
+						fmt.Printf("    ADDING\n")
 						buff = append(buff, r)
 					}
 				}
 			} else {
+				fmt.Printf("here\n")
 				buff = append(buff, r)
 			}
 		}
