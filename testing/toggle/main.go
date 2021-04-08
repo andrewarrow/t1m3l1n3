@@ -42,4 +42,8 @@ func main() {
 	s = network.DoPost(bobUid, sig, fmt.Sprintf("toggle"), asBytes)
 	fmt.Println(s)
 	//network.DisplayRecentTimelines(uid, username, s)
+	s = network.DoGet(bobUid, "bob", fmt.Sprintf("timelines"))
+	fmt.Println(s)
+	s = network.DoGet(sueUid, "sue", fmt.Sprintf("timelines"))
+	fmt.Println(s)
 }
