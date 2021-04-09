@@ -35,21 +35,12 @@ func (u *Universe) ToggleFollow(sig, from string, other *Universe, to string) st
 	}
 	fmt.Printf("ToggleFollow from %s to %s \n %s \n %s \n", from, to, u.Id, other.Id)
 	if u.Block[other.Id] == nil {
-		u.Block[other.Id] = &BlockThing{}
+		u.Block[other.Id] = map[string]map[string]bool{}
 	}
-	if u.Block[other.Id].Thing == nil {
-		u.Block[other.Id].Thing = map[string]*OtherBlockThing{}
+	if u.Block[other.Id][from] == nil {
+		u.Block[other.Id][from] = map[string]bool{}
 	}
-	if u.Block[other.Id].Thing[to] == nil {
-		u.Block[other.Id].Thing[to] = &OtherBlockThing{}
-	}
-	foo := u.Block[other.Id]
-	if foo.Thing[to].Thing == nil {
-		foo.Thing[to].Thing = map[string]*LastBlockThing{}
-	}
-	if foo.Thing[to].Thing[from] == nil {
-		foo.Thing[to].Thing[from] = &LastBlockThing{}
-	}
-	foo.Thing[to].Thing[from].Thing = !foo.Thing[to].Thing[from].Thing
+	u.Block[other.Id][from][to] = !u.Block[other.Id][from][to]
+
 	return ""
 }

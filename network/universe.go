@@ -12,16 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type LastBlockThing struct {
-	Thing bool
-}
-type OtherBlockThing struct {
-	Thing map[string]*LastBlockThing
-}
-type BlockThing struct {
-	Thing map[string]*OtherBlockThing
-}
-
 type Universe struct {
 	Following     []uint64
 	Recent        []*Timeline
@@ -34,7 +24,7 @@ type Universe struct {
 	Id            string
 	UpPeers       []string
 	DownPeers     []string
-	Block         map[string]*BlockThing
+	Block         map[string]map[string]map[string]bool
 }
 
 func MakeUniverses(s string) []string {
@@ -195,7 +185,7 @@ func NewUniverse() *Universe {
 	u.UserCreatedAt = map[string]int64{}
 	u.Profile = map[byte][]*Timeline{}
 	u.Inboxes = map[byte][]*Timeline{}
-	u.Block = map[string]*BlockThing{}
+	u.Block = map[string]map[string]map[string]bool{}
 
 	for i := 0; i < maxUsersPerUniverse; i++ {
 		u.Following = append(u.Following, 0xFFFFFFFFFFFFFFFF)
