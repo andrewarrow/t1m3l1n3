@@ -24,7 +24,7 @@ type Universe struct {
 	Id            string
 	UpPeers       []string
 	DownPeers     []string
-	Block         map[string]map[string]map[string]bool
+	Block         map[string]map[string]map[string]bool // [uid][from][to]
 }
 
 func MakeUniverses(s string) []string {
@@ -53,6 +53,19 @@ func MakeUniversesWithIds(ids []string) []string {
 		if jsonString != "" {
 			var m map[string]interface{}
 			json.Unmarshal([]byte(jsonString), &m)
+			b := m["block"].(map[string]interface{})
+			for k, v := range b {
+				vv := v.(map[string]interface{})
+				u.Block[k] = map[string]map[string]bool{}
+				for kk, val := range vv {
+					mm := val.(map[string]interface{})
+					u.Block[k][kk] = map[string]bool{}
+					for j, jj := range mm {
+						u.Block[k][kk][j] = jj.(bool)
+					}
+				}
+			}
+
 			f := m["following"].([]interface{})
 			u.Following = []uint64{}
 			for _, v := range f {
@@ -83,6 +96,7 @@ func MakeUniversesWithIds(ids []string) []string {
 			}
 		}
 		uids = append(uids, u.Id)
+		fmt.Println("qqqq", u.Block)
 		universes[u.Id] = u
 	}
 	return uids
@@ -116,6 +130,7 @@ func (u *Universe) Marshal() map[string]interface{} {
 	m["user_created_at"] = u.UserCreatedAt
 	m["up_peers"] = u.UpPeers
 	m["down_peers"] = u.DownPeers
+	m["block"] = u.Block
 
 	return m
 }
