@@ -66,6 +66,16 @@ func MakeUniversesWithIds(ids []string) []string {
 				}
 			}
 
+			recent := m["recent"].([]interface{})
+			for _, r := range recent {
+				m := r.(map[string]interface{})
+				t := Timeline{}
+				t.From = m["from"].(string)
+				t.Text = m["text"].(string)
+				t.PostedAt = int64(m["posted_at"].(float64))
+				u.Recent = append(u.Recent, &t)
+			}
+
 			f := m["following"].([]interface{})
 			u.Following = []uint64{}
 			for _, v := range f {
@@ -131,6 +141,7 @@ func (u *Universe) Marshal() map[string]interface{} {
 	m["up_peers"] = u.UpPeers
 	m["down_peers"] = u.DownPeers
 	m["block"] = u.Block
+	m["recent"] = u.Recent
 
 	return m
 }
